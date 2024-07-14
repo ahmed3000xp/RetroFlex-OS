@@ -1,3 +1,5 @@
+If you are using windows then you need to install WSL and then install a GNU+Linux distro through the MS store
+
 If you're on a Debian/Ubuntu/Ubuntu-based system run ./install-debian.sh
 If you're on a Fedora system run ./install-fedora.sh
 If you're on a Arch/Arch-Based system run ./install-arch.sh I don't use Arch, btw
