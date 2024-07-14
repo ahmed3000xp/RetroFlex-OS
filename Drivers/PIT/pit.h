@@ -13,30 +13,22 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "pit.h"
+#include <stdint.h>
+#include "../../Headers/util.h"
+#include "../../IDT/idt.h"
 
-volatile uint32_t ticks = 0;
-volatile uint32_t frequency = 0;
+#define PIT_CHANNEL0 0x40
+#define PIT_COMMAND  0x43
 
-void init_PIT(uint32_t freq) {
-    frequency = freq;
-    uint32_t divisor = __udivdi3(PIT_FREQUENCY, freq);
+#define PIT_CMD_BINARY  0x00
+#define PIT_CMD_MODE3   0x06
 
-    outb(PIT_COMMAND, PIT_CMD_BINARY | PIT_CMD_MODE3);
+#define PIT_FREQUENCY 1193182
 
-    outb(PIT_CHANNEL0, (uint8_t)(divisor & 0xFF));
-    outb(PIT_CHANNEL0, (uint8_t)((divisor >> 8) & 0xFF));
-}
+extern volatile uint32_t ticks;
+extern volatile uint32_t frequency;
 
-void PIT_irq_handler(struct InterruptRegisters *r) {
-    ticks++;
-}
-
-void install_PIT_irq() {
-    irq_install_handler(0, PIT_irq_handler);
-}
-
-void wait(uint32_t tick){
-    uint32_t end_ticks = ticks + tick;       
-    while(ticks != end_ticks);
-}
+void init_PIT(uint32_t frequency);
+void PIT_irq_handler(struct InterruptRegisters *r);
+void install_PIT_irq();
+void wait(uint32_t tick);
