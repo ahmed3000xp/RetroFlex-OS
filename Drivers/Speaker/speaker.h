@@ -13,19 +13,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "speaker.h"
+#include "../../Headers/stdint.h"
+#include "../../Headers/util.h"
+#include "../PIT/pit.h"
 
-void beep(uint32_t frequencey) {
- 	uint8_t tmp;
-
- 	tmp = inb(0x61);
-
-  	if (tmp != (tmp | 3)) {
- 		outb(0x61, tmp | 3);
- 	}
-}
- 
-void stop_beep() {
- 	uint8_t tmp = inb(0x61) & 0xFC;
- 	outb(0x61, tmp);
-}
+void beep(uint32_t frequencey);
+void stop_beep();
