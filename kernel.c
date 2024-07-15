@@ -23,11 +23,6 @@ extern void test_ints();
 
 void kmain(uint32_t magic, struct multiboot_info* mb_info) {
     uint8_t kc = 0;
-    
-    printf("Initializing PS/2 Controller\n");
-    ps2_init();
-
-    read_multiboot_header(magic, mb_info); // Print the multiboot header for no reason
 
     printf("Initializing GDT\n");
     init_GDT();
@@ -41,7 +36,10 @@ void kmain(uint32_t magic, struct multiboot_info* mb_info) {
     printf("Installing PIT IRQ\n");
     install_PIT_irq();
 
-    printf("Installing PS/2 Keyboard IRQ\n");
+    printf("Initializing PS/2 Controller\n");
+    ps2_init();
+
+    printf("Installing PS/2 Controller IRQ\n");
     install_keyboard_irq();
 
     printf("Creating Page Directory and Enabling Paging\n");
