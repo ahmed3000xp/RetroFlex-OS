@@ -52,6 +52,58 @@ void install_keyboard_irq() {
     irq_install_handler(1, keyboard_irq_handler);
 }
 
+uint8_t keycodes_in_uppercase(uint8_t k){
+    switch(k){
+        case '1': k = '!'; break;
+        case '2': k = '@'; break;
+        case '3': k = '#'; break;
+        case '4': k = '$'; break;
+        case '5': k = '%'; break;
+        case '6': k = '^'; break;
+        case '7': k = '&'; break;
+        case '8': k = '*'; break;
+        case '9': k = '('; break;
+        case '0': k = ')'; break;
+        case '-': k = '_'; break;
+        case '=': k = '+'; break;
+        case 'q': k = 'Q'; break;
+        case 'w': k = 'W'; break;
+        case 'e': k = 'E'; break;
+        case 'r': k = 'R'; break;
+        case 't': k = 'T'; break;
+        case 'y': k = 'Y'; break;
+        case 'u': k = 'U'; break;
+        case 'i': k = 'I'; break;
+        case 'o': k = 'O'; break;
+        case 'p': k = 'P'; break;
+        case 'a': k = 'A'; break;
+        case 's': k = 'S'; break;
+        case 'd': k = 'D'; break;
+        case 'f': k = 'F'; break;
+        case 'g': k = 'G'; break;
+        case 'h': k = 'H'; break;
+        case 'j': k = 'J'; break;
+        case 'k': k = 'K'; break;
+        case 'l': k = 'L'; break;
+        case 'z': k = 'Z'; break;
+        case 'x': k = 'X'; break;
+        case 'c': k = 'C'; break;
+        case 'v': k = 'V'; break;
+        case 'b': k = 'B'; break;
+        case 'n': k = 'N'; break;
+        case 'm': k = 'M'; break;
+        case '[': k = '{'; break;
+        case ']': k = '}'; break;
+        case '\\': k = '|'; break;
+        case ';': k = ':'; break;
+        case '\'': k = '"'; break;
+        case ',': k = '<'; break;
+        case '.': k = '>'; break;
+        case '/': k = '?'; break;
+    }
+    return k;
+}
+
 // Process keyboard scan code
 void process_scan_code(uint8_t scan_code) {
     key_released = scan_code & 0x80;
@@ -79,25 +131,10 @@ void process_scan_code(uint8_t scan_code) {
                         case ESCAPE:
                             key = 0x1b;
                             break;
-                        case CAPSLOCK:
-                            capslock = !capslock;
-                            outb(PS2_COMMAND_PORT, 0xed);
-                            outb(PS2_DATA_PORT, capslock << 2 | numlock << 1 | scroll_lock);
-                            key = 0;
-                            break;
-                        case NUMLOCK:
-                            numlock = !numlock;
-                            outb(PS2_COMMAND_PORT, 0xed);
-                            outb(PS2_DATA_PORT, capslock << 2 | numlock << 1 | scroll_lock);
-                            key = 0;
-                            break;
-                        case SCROLLLOCK:
-                            scroll_lock = !scroll_lock;
-                            outb(PS2_COMMAND_PORT, 0xed);
-                            outb(PS2_DATA_PORT, capslock << 2 | numlock << 1 | scroll_lock);
-                            key = 0;
-                            break;
                         default:
+                            if(shift_pressed){
+                                key = keycodes_in_uppercase(key);
+                            }
                             break;
                     }
                 }
