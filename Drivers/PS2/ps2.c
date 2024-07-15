@@ -37,6 +37,10 @@ uint8_t ps2_read_data() {
     return inb(PS2_DATA_PORT);
 }
 
+void ps2_write_data(uint8_t data) {
+    outb(PS2_DATA_PORT, data);
+}
+
 // Wait for PS/2 output buffer to be full
 void ps2_wait_output() {
     while (!(inb(PS2_STATUS_PORT) & PS2_STATUS_OUTPUT_BUFFER));
@@ -123,6 +127,7 @@ void process_scan_code(uint8_t scan_code) {
             case 0x1D: ctrl_pressed = true; break;  // Ctrl
             case 0x38: alt_pressed = true; break;   // Alt
             default:
+                ps2_handle_special(scan_code);
                 if (keymap[scan_code]) {
                     key = keymap[scan_code];
                     new_key_press = true; // Set new key press flag
@@ -141,6 +146,33 @@ void process_scan_code(uint8_t scan_code) {
                 break;
         }
     }
+}
+
+void ps2_handle_special(unsigned char scancode) {
+    // Handle key presses to update LED state
+    switch (scancode) {
+        case 0x3A:  // CapsLock pressed
+            leds_state ^= PS2_LED_CAPS_LOCK;
+            ps2_set_leds(leds_state);
+            break;
+        case 0x45:  // NumLock pressed
+            leds_state ^= PS2_LED_NUM_LOCK;
+            ps2_set_leds(leds_state);
+            break;
+        case 0x46:  // ScrollLock pressed
+            leds_state ^= PS2_LED_SCROLL_LOCK;
+            ps2_set_leds(leds_state);
+            break;
+        default:
+            // Handle other key presses if necessary
+            break;
+    }
+}
+
+void ps2_set_leds(unsigned char leds) {
+    // Send command to set keyboard LEDs
+    ps2_write_command(PS2_CMD_SET_LED);
+    ps2_write_data(leds);
 }
 
 uint8_t getch() {

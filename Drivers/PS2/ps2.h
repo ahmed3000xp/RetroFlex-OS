@@ -27,6 +27,11 @@
 #define PS2_CMD_READ_CONFIG 0x20
 #define PS2_CMD_WRITE_CONFIG 0x60
 #define PS2_CMD_ENABLE_KEYBOARD 0xAE
+#define PS2_CMD_SET_LED 0xED
+
+#define PS2_LED_NUM_LOCK 0x01
+#define PS2_LED_CAPS_LOCK 0x02
+#define PS2_LED_SCROLL_LOCK 0x04
 
 // PS/2 controller status
 #define PS2_STATUS_OUTPUT_BUFFER 0x01
@@ -145,6 +150,7 @@ static bool key_released = false;
 static bool new_key_press = false;
 
 static uint8_t key = 0;
+static uint8_t leds_state = 0;
 
 // Function prototypes
 void ps2_init();
@@ -152,8 +158,11 @@ void keyboard_irq_handler(struct InterruptRegisters *r);
 void install_keyboard_irq();
 void ps2_wait_output();
 uint8_t ps2_read_data();
+void ps2_write_data(uint8_t data);
 void ps2_write_command(uint8_t command);
 uint8_t keycodes_in_uppercase(uint8_t k);
 void process_scan_code(uint8_t scan_code);
+void ps2_handle_special(unsigned char scancode);
+void ps2_set_leds(unsigned char leds);
 uint8_t getch();
 bool kbhit();
