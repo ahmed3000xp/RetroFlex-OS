@@ -47,4 +47,4 @@ mv build/kernel build/iso/boot/kernel
 
 grub-mkrescue -o build/os.iso build/iso/
 
-qemu-system-x86_64 -hda build/os.iso
+qemu-system-x86_64 build/os.iso

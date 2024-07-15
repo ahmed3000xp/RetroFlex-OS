@@ -15,7 +15,4 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-sudo apt install xorriso grub-common qemu-system-x86
-sudo apt-get install nasm
-sudo apt-get install qemu
-sudo apt-get install qemu-kvm
+sudo apt install xorriso grub-common qemu-system-x86 nasm gcc
