@@ -24,26 +24,41 @@ extern void test_ints();
 void kmain(uint32_t magic, struct multiboot_info* mb_info) {
     uint8_t kc = 0;
     
+    printf("Initializing PS/2 Controller\n");
+    ps2_init();
+
     read_multiboot_header(magic, mb_info); // Print the multiboot header for no reason
+
     printf("Initializing GDT\n");
     init_GDT();
+
     printf("Initializing IDT\n");
     init_IDT();
+
     printf("Initializing PIT\n");
     init_PIT(60);
+
     printf("Installing PIT IRQ\n");
     install_PIT_irq();
-    printf("Initializing PS/2 Keyboard\n");
-    ps2_init();
-    printf("Installing Keyboard IRQ\n");
+
+    printf("Installing PS/2 Keyboard IRQ\n");
     install_keyboard_irq();
+
     printf("Creating Page Directory and Enabling Paging\n");
     enable_paging();
+
     printf("Reading RTC\n");
     read_rtc();
-    printf("Time %d:%d:%d\n", hour, minute, second);
-    printf("Date %d/%d/%d\n", day, month, current_year);
-    while(1){
 
+    printf("Time %d:%d:%d\n", hour, minute, second);
+
+    printf("Date %d/%d/%d\n", day, month, current_year);
+    while(kc != 0x1b){
+        if(kbhit()){
+            kc = getch();
+            putc(kc);
+        }
     }
+
+    return;
 }
