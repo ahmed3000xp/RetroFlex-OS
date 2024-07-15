@@ -29,13 +29,11 @@ void ps2_init() {
 
 // PS/2 write command
 void ps2_write_command(uint8_t command) {
-    ps2_wait_output();
     outb(PS2_COMMAND_PORT, command);
 }
 
 // PS/2 read data
 uint8_t ps2_read_data() {
-    ps2_wait_output();
     return inb(PS2_DATA_PORT);
 }
 
