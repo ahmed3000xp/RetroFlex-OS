@@ -15,49 +15,12 @@
 
 bits 32
 
-section .bss
-align 4096
-page_directory:
-    resd 1024
-page_table:
-    resd 1024
-
-section .text
-
 global enable_paging
 enable_paging:
-    pusha
-    xor eax, eax
-    mov ecx, 1024
-    lea edi, [page_directory]
-    rep stosd
-
-    ; Map the first 4 MB of memory (identity map)
-    ; Clear the page table
-    lea edi, [page_table]
-    rep stosd
-
-    ; Fill page table entries (identity map 4MB)
-    mov ebx, 0x00000000
-    mov ecx, 1024
-    lea edi, [page_table]
-.map_pages:
-    mov eax, ebx
-    or eax, 0x3                ; Present and Read/Write flags
-    stosd
-    add ebx, 4096              ; Move to the next 4 KB page
-    loop .map_pages
-
-    ; Point the first page directory entry to the page table
-    lea eax, [page_table]
-    or eax, 0x3                ; Present and Read/Write flags
-    mov [page_directory], eax
-
-    lea eax, [page_directory]
+    mov eax, [esp+4]
     mov cr3, eax                 
 
     mov eax, cr0
     or eax, 0x80000000
     mov cr0, eax
-    popa
     ret
