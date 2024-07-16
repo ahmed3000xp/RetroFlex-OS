@@ -22,24 +22,25 @@ echo 'under certain conditions; type '\''show c'\'' for details.'
 
 rm build/*.iso
 
-gcc -m32 -Werror -ffreestanding -c kernel.c -o build/kernelc.o
-gcc -m32 -Werror -ffreestanding -c Headers/util.c -o build/util.o
-gcc -m32 -Werror -ffreestanding -c Drivers/VGA/vga.c -o build/vga.o
-gcc -m32 -Werror -ffreestanding -c GDT/gdt.c -o build/gdtc.o
-gcc -m32 -Werror -ffreestanding -c IDT/idt.c -o build/idtc.o
-gcc -m32 -Werror -ffreestanding -c Drivers/Speaker/speaker.c -o build/speaker.o
-gcc -m32 -Werror -ffreestanding -c Drivers/PIT/pit.c -o build/pit.o
-gcc -m32 -Werror -ffreestanding -c Drivers/CMOS/cmos.c -o build/cmos.o
-gcc -m32 -Werror -ffreestanding -c Drivers/PS2/ps2.c -o build/ps2.o
-gcc -m32 -Werror -ffreestanding -c Headers/multiboot.c -o build/multiboot.o
+gcc -m32 -Werror -ffreestanding -fno-stack-protector -c kernel.c -o build/kernelc.o
+gcc -m32 -Werror -ffreestanding -fno-stack-protector -c Headers/util.c -o build/util.o
+gcc -m32 -Werror -ffreestanding -fno-stack-protector -c Drivers/VGA/vga.c -o build/vga.o
+gcc -m32 -Werror -ffreestanding -fno-stack-protector -c GDT/gdt.c -o build/gdtc.o
+gcc -m32 -Werror -ffreestanding -fno-stack-protector -c IDT/idt.c -o build/idtc.o
+gcc -m32 -Werror -ffreestanding -fno-stack-protector -c Drivers/Speaker/speaker.c -o build/speaker.o
+gcc -m32 -Werror -ffreestanding -fno-stack-protector -c Drivers/PIT/pit.c -o build/pit.o
+gcc -m32 -Werror -ffreestanding -fno-stack-protector -c Drivers/CMOS/cmos.c -o build/cmos.o
+gcc -m32 -Werror -ffreestanding -fno-stack-protector -c Drivers/PS2/ps2.c -o build/ps2.o
+gcc -m32 -Werror -ffreestanding -fno-stack-protector -c Headers/multiboot.c -o build/multiboot.o
+gcc -m32 -Werror -ffreestanding -fno-stack-protector -c Paging/paging.c -o build/pagingc.o
 
 nasm -f elf Boot/boot.asm -o build/boot.o
 nasm -f elf kernel.asm -o build/kernelasm.o
 nasm -f elf GDT/gdt.asm -o build/gdtasm.o
 nasm -f elf IDT/idt.asm -o build/idtasm.o
-nasm -f elf Paging/paging.asm -o build/paging.o
+nasm -f elf Paging/paging.asm -o build/pagingasm.o
 
-ld -m elf_i386 -T linker.ld -o build/kernel build/boot.o build/kernelc.o build/kernelasm.o build/util.o build/vga.o build/gdtasm.o build/gdtc.o build/idtasm.o build/idtc.o build/speaker.o build/pit.o build/cmos.o build/multiboot.o build/paging.o build/ps2.o
+ld -m elf_i386 -T linker.ld -o build/kernel build/boot.o build/kernelc.o build/kernelasm.o build/util.o build/vga.o build/gdtasm.o build/gdtc.o build/idtasm.o build/idtc.o build/speaker.o build/pit.o build/cmos.o build/multiboot.o build/pagingc.o build/pagingasm.o build/ps2.o
 
 rm build/*.o
 

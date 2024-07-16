@@ -15,4 +15,4 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-sudo apt install xorriso grub-common qemu-system-x86 nasm gcc mtools
+sudo apt install xorriso grub-common qemu-system-x86 nasm gcc

@@ -6,6 +6,8 @@ For Debian/Ubuntu/Ubuntu-based Systems:
 
 Run the following command:
 
+bash
+
 ./install-debian.sh
 
 For Fedora Systems:
@@ -20,7 +22,7 @@ Run the following command:
 
 ./install-arch.sh
 
-(Note: I use Arch, btw!)
+(Note: I don't use Arch, btw!)
 Compiling and Running RetroFlex OS
 
 After installation, compile and run RetroFlex OS by executing:

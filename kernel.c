@@ -42,8 +42,8 @@ void kmain(uint32_t magic, struct multiboot_info* mb_info) {
     printf("Installing PS/2 Controller IRQ\n");
     install_keyboard_irq();
 
-    printf("Creating Page Directory and Enabling Paging\n");
-    enable_paging();
+    printf("Initializing Paging\n");
+    init_paging();
 
     printf("Reading RTC\n");
     read_rtc();
@@ -51,8 +51,8 @@ void kmain(uint32_t magic, struct multiboot_info* mb_info) {
     printf("Time %d:%d:%d\n", hour, minute, second);
 
     printf("Date %d/%d/%d\n", day, month, current_year);
-    while(kc != 0x1b){
-        if(kbhit()){
+    while(kc != 0x1b) {
+        if(kbhit()) {
             kc = getch();
             putc(kc);
         }
