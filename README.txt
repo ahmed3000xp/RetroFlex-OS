@@ -22,7 +22,6 @@ Run the following command:
 
 ./install-arch.sh
 
-(Note: I don't use Arch, btw!)
 Compiling and Running RetroFlex OS
 
 After installation, compile and run RetroFlex OS by executing:
