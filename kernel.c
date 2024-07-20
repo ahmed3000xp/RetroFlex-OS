@@ -21,14 +21,6 @@
 
 extern void test_ints();
 
-<<<<<<< HEAD
-void kmain(uint32_t magic, struct multiboot_info* mb_info) {
-    uint8_t kc = 0;
-
-    printf("Initializing GDT\n");
-    init_GDT();
-
-=======
 void main(uint32_t magic, struct multiboot_info* mb_info) {
     uint8_t kc = 0;
 
@@ -43,7 +35,6 @@ void main(uint32_t magic, struct multiboot_info* mb_info) {
     printf("Initializing Paging\n");
     init_paging();
 
->>>>>>> 28d8df4 (Just interagting with Vscode)
     printf("Initializing IDT\n");
     init_IDT();
 
@@ -59,7 +50,6 @@ void main(uint32_t magic, struct multiboot_info* mb_info) {
     printf("Installing PS/2 Controller IRQ\n");
     install_keyboard_irq();
 
-<<<<<<< HEAD
     printf("Initializing Paging\n");
     init_paging();
 
@@ -69,25 +59,21 @@ void main(uint32_t magic, struct multiboot_info* mb_info) {
     printf("Time %d:%d:%d\n", hour, minute, second);
 
     printf("Date %d/%d/%d\n", day, month, current_year);
-=======
+    
     printf("Reading RTC\n");
     read_rtc();
 
     printf("Time %d:%d:%d\n", hour, minute, second); // Get RTC Time
 
     printf("Date %d/%d/%d\n", day, month, current_year); // Get RTC Date
-
->>>>>>> 28d8df4 (Just interagting with Vscode)
+    
     while(kc != 0x1b) {
         if(kbhit()) {
             kc = getch();
             putc(kc);
         }
     }
-<<<<<<< HEAD
-
-=======
+    
     printf("\nIt is safe to turn off or reset your PC\n");
->>>>>>> 28d8df4 (Just interagting with Vscode)
     return;
 }

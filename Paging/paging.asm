@@ -23,8 +23,6 @@ enable_paging:
     mov eax, cr0
     or eax, 0x80000000
     mov cr0, eax
-<<<<<<< HEAD
+
     ret
-=======
-    ret
->>>>>>> 28d8df4 (Just interagting with Vscode)
+

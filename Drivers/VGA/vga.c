@@ -16,16 +16,6 @@
 #include "vga.h"
 #include <stdarg.h>
 
-<<<<<<< HEAD
-uint16_t *text_memory = (uint16_t *)0xb8000;
-uint8_t *vga_memory = (uint8_t *)0xa0000;
-
-uint32_t width = 80;
-uint32_t height = 25;
-uint32_t cursor_x = 0;
-uint32_t cursor_y = 0;
-uint8_t current_color = DEFAULT_COLOR;
-=======
 volatile uint16_t *text_memory = (uint16_t *)0xb8000;
 volatile uint8_t *vga_memory = (uint8_t *)0xa0000;
 
@@ -34,7 +24,7 @@ uint32_t height = 25;
 volatile uint32_t cursor_x = 0;
 volatile uint32_t cursor_y = 0;
 volatile uint8_t current_color = DEFAULT_COLOR;
->>>>>>> 28d8df4 (Just interagting with Vscode)
+
 uint8_t current_mode = 0x3;
 uint8_t tap_len = 4;
 

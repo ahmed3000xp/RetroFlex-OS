@@ -126,8 +126,6 @@ void process_scan_code(uint8_t scan_code) {
             case 0x36: shift_pressed = true; break; // Right Shift
             case 0x1D: ctrl_pressed = true; break;  // Ctrl
             case 0x38: alt_pressed = true; break;   // Alt
-<<<<<<< HEAD
-=======
             case 0xe0:
             ps2_wait_output();
             switch (ps2_read_data())
@@ -160,7 +158,6 @@ void process_scan_code(uint8_t scan_code) {
                 break;
             }
             break;
->>>>>>> 28d8df4 (Just interagting with Vscode)
             default:
                 ps2_handle_special(scan_code);
                 if (keymap[scan_code]) {
