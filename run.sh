@@ -48,4 +48,4 @@ mv build/kernel build/iso/boot/kernel
 
 grub-mkrescue -o build/os.iso build/iso/
 
-qemu-system-x86_64 build/os.iso
+qemu-system-x86_64 -debugcon stdio build/os.iso 

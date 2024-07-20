@@ -158,7 +158,7 @@ void isr_handler(struct InterruptRegisters* regs){
                 break;
             default:
                 printf(exception_messages[regs->int_no]);
-                printf("Registers\nEAX = 0x%x EBX = 0x%x ECX = 0x%x EDX = 0x%x");
+                putc('\n');
                 printf("Exception! System Halted\n");
                 for(;;);
                 break;

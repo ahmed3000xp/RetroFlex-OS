@@ -109,9 +109,6 @@ void read_rtc() {
             if (year < current_year)
                   year += 100;
       }
-
-      // Update CMOS with current values
-      update_cmos();
 }
 
 void update_cmos() {

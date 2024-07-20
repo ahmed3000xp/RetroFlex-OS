@@ -21,19 +21,6 @@ section .text
     DD -(0x1BADB002 + 0x00000003)
 
 global start
-extern kmain
-
-start:
-    cli
-    mov esp, stack_space   
-    push ebx
-    push eax
-    call kmain             
-    DD 0x1BADB002 ; Multiboot magic Number
-    DD 0x00000003 ; Multiboot Flags
-    DD -(0x1BADB002 + 0x00000003) ; Multiboot Checksum
-
-global start
 extern main
 
 start:

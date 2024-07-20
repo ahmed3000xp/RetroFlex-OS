@@ -29,43 +29,33 @@ void main(uint32_t magic, struct multiboot_info* mb_info) {
     printf("This is free software, and you are welcome to redistribute it\n");
     printf("under certain conditions; type 'show c' for details.\n\n");
 
-    printf("Initializing GDT\n");
+    dbg_printf("[%d] Initializing GDT\n",ticks);
     init_GDT();
 
-    printf("Initializing Paging\n");
+    dbg_printf("[%d] Initializing Paging\n",ticks);
     init_paging();
 
-    printf("Initializing IDT\n");
+    dbg_printf("[%d] Initializing IDT\n",ticks);
     init_IDT();
 
-    printf("Initializing PIT\n");
+    dbg_printf("[%d] Initializing PIT\n",ticks);
     init_PIT(60);
 
-    printf("Installing PIT IRQ\n");
+    dbg_printf("[%d] Installing PIT IRQ\n",ticks);
     install_PIT_irq();
 
-    printf("Initializing PS/2 Controller\n");
+    dbg_printf("[%d] Initializing PS/2 Controller\n",ticks);
     ps2_init();
 
-    printf("Installing PS/2 Controller IRQ\n");
+    dbg_printf("[%d] Installing PS/2 Controller IRQ\n",ticks);
     install_keyboard_irq();
 
-    printf("Initializing Paging\n");
-    init_paging();
-
-    printf("Reading RTC\n");
+    dbg_printf("[%d] Reading RTC\n",ticks);
     read_rtc();
 
     printf("Time %d:%d:%d\n", hour, minute, second);
 
     printf("Date %d/%d/%d\n", day, month, current_year);
-    
-    printf("Reading RTC\n");
-    read_rtc();
-
-    printf("Time %d:%d:%d\n", hour, minute, second); // Get RTC Time
-
-    printf("Date %d/%d/%d\n", day, month, current_year); // Get RTC Date
     
     while(kc != 0x1b) {
         if(kbhit()) {
