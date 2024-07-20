@@ -17,12 +17,17 @@ bits 32
 
 global enable_paging
 enable_paging:
+    ; Load the page directory base address into CR3
     mov eax, [esp+4]
-    mov cr3, eax                 
+    mov cr3, eax
 
+    ; Enable paging by setting the paging bit (bit 31) in CR0
     mov eax, cr0
     or eax, 0x80000000
     mov cr0, eax
 
-    ret
+    ; Flush the instruction cache (optional but recommended)
+    mov eax, 0x20F
+    mov cr4, eax
 
+    ret
