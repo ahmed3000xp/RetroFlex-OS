@@ -16,8 +16,17 @@
 #include "../../Headers/stdint.h"
 #include "../../Headers/util.h"
 
+<<<<<<< HEAD
 extern uint16_t* text_memory;
 extern uint8_t* vga_memory;
+=======
+extern volatile uint16_t* text_memory;
+extern volatile uint8_t* vga_memory;
+
+extern volatile uint32_t cursor_x;
+extern volatile uint32_t cursor_y;
+extern volatile uint8_t current_color;
+>>>>>>> 28d8df4 (Just interagting with Vscode)
 #define DEFAULT_COLOR 7
 
 void wait_for_retrace();

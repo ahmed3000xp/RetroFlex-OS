@@ -6,6 +6,11 @@ For Debian/Ubuntu/Ubuntu-based Systems:
 
 Run the following command:
 
+<<<<<<< HEAD
+=======
+bash
+
+>>>>>>> 28d8df4 (Just interagting with Vscode)
 ./install-debian.sh
 
 For Fedora Systems:
@@ -20,6 +25,10 @@ Run the following command:
 
 ./install-arch.sh
 
+<<<<<<< HEAD
+=======
+(Note: I don't use Arch, btw!)
+>>>>>>> 28d8df4 (Just interagting with Vscode)
 Compiling and Running RetroFlex OS
 
 After installation, compile and run RetroFlex OS by executing:

@@ -126,6 +126,41 @@ void process_scan_code(uint8_t scan_code) {
             case 0x36: shift_pressed = true; break; // Right Shift
             case 0x1D: ctrl_pressed = true; break;  // Ctrl
             case 0x38: alt_pressed = true; break;   // Alt
+<<<<<<< HEAD
+=======
+            case 0xe0:
+            ps2_wait_output();
+            switch (ps2_read_data())
+            {
+            case CURSOR_UP:
+                if(cursor_y != 0){
+                    cursor_y--;
+                }
+                update_cursor(cursor_x, cursor_y);
+                break;
+            case CURSOR_DOWN:
+                if(cursor_y != 24){
+                    cursor_y++;
+                }
+                update_cursor(cursor_x, cursor_y);
+                break;
+            case CURSOR_LEFT:
+                if(cursor_x != 0){
+                    cursor_x--;
+                }
+                update_cursor(cursor_x, cursor_y);
+                break;
+            case CURSOR_RIGHT:
+                if(cursor_x != 79){
+                    cursor_x++;
+                }
+                update_cursor(cursor_x, cursor_y);
+                break;
+            default:
+                break;
+            }
+            break;
+>>>>>>> 28d8df4 (Just interagting with Vscode)
             default:
                 ps2_handle_special(scan_code);
                 if (keymap[scan_code]) {

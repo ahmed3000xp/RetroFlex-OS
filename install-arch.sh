@@ -15,4 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+<<<<<<< HEAD
 sudo pacman -Syu --noconfirm xorriso nasm qemu grub virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat base-devel bison flex gmp libmpc mpfr texinfo gcc
+=======
+sudo pacman -Syu --noconfirm xorriso nasm qemu qemu-system-x86 grub virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat base-devel bison flex gmp libmpc mpfr texinfo gcc
+>>>>>>> 28d8df4 (Just interagting with Vscode)

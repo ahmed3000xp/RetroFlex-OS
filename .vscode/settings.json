@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "vga.h": "c",
+        "stdint.h": "c",
+        "speaker.h": "c",
+        "multiboot.h": "c",
+        "util.h": "c",
+        "idt.h": "c",
+        "pit.h": "c",
+        "cmos.h": "c",
+        "gdt.h": "c",
+        "ps2.h": "c"
+    }
+}

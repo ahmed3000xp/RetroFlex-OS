@@ -58,7 +58,11 @@ void init_paging() {
     set_page_directory_entry(0, (uint32_t)page_table, 0x003); // Present, RW
 
     // Map virtual address 0xc0000000 to physical address 0x00100000
+<<<<<<< HEAD
     map_page(0x00100000, 0xc0000000, 0x003); // Present, RW
+=======
+    map_page(0x00100000, 0xc0000000, 0x007); // Present, RW, U/S
+>>>>>>> 28d8df4 (Just interagting with Vscode)
 
     // Enable paging
     enable_paging((uint32_t)page_directory);
