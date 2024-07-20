@@ -6,8 +6,6 @@ For Debian/Ubuntu/Ubuntu-based Systems:
 
 Run the following command:
 
-bash
-
 ./install-debian.sh
 
 For Fedora Systems:
