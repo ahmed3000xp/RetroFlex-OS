@@ -61,7 +61,6 @@ enum SpecialKeys {
     LEFT_CTRL = 0x1D,
     LEFT_SHIFT = 0x2A,
     LEFT_ALT = 0x38,
-<<<<<<< HEAD
     RIGHT_CTRL = 0x1D | 0xE0,
     RIGHT_SHIFT = 0x36,
     RIGHT_ALT = 0x38 | 0xE0,
@@ -73,7 +72,6 @@ enum SpecialKeys {
     WAKE = 0x63 | 0xE0,
     KEYPAD_ENTER = 0x1C | 0xE0,
     KEYPAD_SLASH = 0x35 | 0xE0,
-=======
     RIGHT_CTRL = 0x1D,
     RIGHT_SHIFT = 0x36,
     RIGHT_ALT = 0x38,
@@ -85,7 +83,6 @@ enum SpecialKeys {
     WAKE = 0x63,
     KEYPAD_ENTER = 0x1C,
     KEYPAD_SLASH = 0x35,
->>>>>>> 28d8df4 (Just interagting with Vscode)
     KEYPAD_STAR = 0x37,
     KEYPAD_MINUS = 0x4A,
     KEYPAD_PLUS = 0x4E,
@@ -100,7 +97,6 @@ enum SpecialKeys {
     KEYPAD_7 = 0x47,
     KEYPAD_8 = 0x48,
     KEYPAD_9 = 0x49,
-<<<<<<< HEAD
     HOME = 0x47 | 0xE0,
     CURSOR_UP = 0x48 | 0xE0,
     PAGE_UP = 0x49 | 0xE0,
@@ -131,38 +127,6 @@ enum SpecialKeys {
     MULTIMEDIA_MY_COMPUTER = 0x6F | 0xE0,
     MULTIMEDIA_EMAIL = 0x73 | 0xE0,
     MULTIMEDIA_MEDIA_SELECT = 0x74 | 0xE0
-=======
-    HOME = 0x47,
-    CURSOR_UP = 0x48,
-    PAGE_UP = 0x49,
-    CURSOR_LEFT = 0x4B,
-    CURSOR_RIGHT = 0x4D,
-    END = 0x4F,
-    CURSOR_DOWN = 0x50,
-    PAGE_DOWN = 0x51,
-    INSERT = 0x52,
-    DELETE = 0x53,
-    PRINT_SCREEN = 0x37,
-    PAUSE = 0x45,
-    MULTIMEDIA_PREVIOUS_TRACK = 0x10,
-    MULTIMEDIA_NEXT_TRACK = 0x19,
-    MULTIMEDIA_MUTE = 0x20,
-    MULTIMEDIA_CALCULATOR = 0x21,
-    MULTIMEDIA_PLAY = 0x22,
-    MULTIMEDIA_STOP = 0x24,
-    MULTIMEDIA_VOLUME_DOWN = 0x2E,
-    MULTIMEDIA_VOLUME_UP = 0x30,
-    MULTIMEDIA_WWW_HOME = 0x32,
-    MULTIMEDIA_WWW_SEARCH = 0x40,
-    MULTIMEDIA_WWW_FAVORITES = 0x48,
-    MULTIMEDIA_WWW_REFRESH = 0x50,
-    MULTIMEDIA_WWW_STOP = 0x68,
-    MULTIMEDIA_WWW_FORWARD = 0x6A,
-    MULTIMEDIA_WWW_BACK = 0x6C,
-    MULTIMEDIA_MY_COMPUTER = 0x6F,
-    MULTIMEDIA_EMAIL = 0x73,
-    MULTIMEDIA_MEDIA_SELECT = 0x74
->>>>>>> 28d8df4 (Just interagting with Vscode)
 };
 
 // Keyboard scan code set
