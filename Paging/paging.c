@@ -1,4 +1,4 @@
-// Copyright (C) 2024 The RetroFlex OS Project
+// Copyright (C) 2024 Ahmed
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -27,10 +27,18 @@ void set_page_table_entry(uint32_t index, uint32_t base_addr, uint32_t flags) {
     page_table[index] = (base_addr & 0xFFFFF000) | (flags & 0xFFF);
 }
 
-// Function to map a virtual address to a physical address with specified flags
 void map_page(uint32_t physical_addr, uint32_t virtual_addr, uint32_t flags) {
     uint32_t dir_index = (virtual_addr >> 22) & 0x3FF;
     uint32_t table_index = (virtual_addr >> 12) & 0x3FF;
+
+    // Ensure the page directory entry points to a valid page table
+    if (page_directory[dir_index] & 0x1) { // Check if page directory entry is present
+        // Page table is already present, no need to create it
+    } else {
+        // Page table not present, allocate and set it up
+        uint32_t page_table_addr = (uint32_t)page_table;
+        set_page_directory_entry(dir_index, page_table_addr, 0x003); // Present, RW
+    }
 
     // Set up the page table to point to the physical address with specified flags
     set_page_table_entry(table_index, physical_addr, flags);
