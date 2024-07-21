@@ -1,4 +1,4 @@
-; Copyright (C) 2024 The RetroFlex OS Project
+; Copyright (C) 2024 Ahmed
 ;
 ; This program is free software: you can redistribute it and/or modify
 ; it under the terms of the GNU General Public License as published by
@@ -16,24 +16,9 @@
 BITS 32
 section .text
     align 4
-<<<<<<< HEAD
     DD 0x1BADB002
     DD 0x00000003
     DD -(0x1BADB002 + 0x00000003)
-
-global start
-extern kmain
-
-start:
-    cli
-    mov esp, stack_space   
-    push ebx
-    push eax
-    call kmain             
-=======
-    DD 0x1BADB002 ; Multiboot magic Number
-    DD 0x00000003 ; Multiboot Flags
-    DD -(0x1BADB002 + 0x00000003) ; Multiboot Checksum
 
 global start
 extern main
@@ -44,7 +29,6 @@ start:
     push ebx ; Push pointer to Multiboot header
     push eax ; Push Magic Number
     call main ; Start the kernel         
->>>>>>> 28d8df4 (Just interagting with Vscode)
 halt_kernel:
     cli
     hlt
@@ -52,8 +36,4 @@ halt_kernel:
 
 section .bss
     resb 8192              
-<<<<<<< HEAD
 stack_space:
-=======
-stack_space:
->>>>>>> 28d8df4 (Just interagting with Vscode)
