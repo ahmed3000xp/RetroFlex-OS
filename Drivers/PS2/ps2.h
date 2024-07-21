@@ -1,4 +1,4 @@
-// Copyright (C) 2024 The RetroFlex OS Project
+// Copyright (C) 2024 Ahmed
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -87,12 +87,12 @@ enum SpecialKeys {
     KEYPAD_8 = 0x48,
     KEYPAD_9 = 0x49,
     HOME = 0x47 | 0xE0,
-    CURSOR_UP = 0x48 | 0xE0,
+    CURSOR_UP = 0x48,
     PAGE_UP = 0x49 | 0xE0,
-    CURSOR_LEFT = 0x4B | 0xE0,
-    CURSOR_RIGHT = 0x4D | 0xE0,
+    CURSOR_LEFT = 0x4B,
+    CURSOR_RIGHT = 0x4D,
     END = 0x4F | 0xE0,
-    CURSOR_DOWN = 0x50 | 0xE0,
+    CURSOR_DOWN = 0x50,
     PAGE_DOWN = 0x51 | 0xE0,
     INSERT = 0x52 | 0xE0,
     DELETE = 0x53 | 0xE0,
@@ -141,6 +141,7 @@ static const char keymap[256] = {
 static bool shift_pressed = false;
 static bool ctrl_pressed = false;
 static bool alt_pressed = false;
+static bool extended_key_sequence = false; // Flag to track extended key sequence
 
 static bool numlock = false;
 static bool scroll_lock = false;
