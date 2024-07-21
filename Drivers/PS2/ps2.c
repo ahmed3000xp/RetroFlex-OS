@@ -1,4 +1,4 @@
-// Copyright (C) 2024 The RetroFlex OS Project
+// Copyright (C) 2024 Ahmed
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,6 +22,9 @@ void ps2_init() {
     
     // Enable keyboard
     ps2_write_command(PS2_CMD_ENABLE_KEYBOARD);
+    scroll_lock = false;
+    numlock = false;
+    capslock = false;
     
     // Re-enable interrupts
     enable_interrupts();
@@ -108,103 +111,110 @@ uint8_t keycodes_in_uppercase(uint8_t k){
     return k;
 }
 
-// Process keyboard scan code
 void process_scan_code(uint8_t scan_code) {
-    key_released = scan_code & 0x80;
-    scan_code &= 0x7F; // Mask out the release bit
-    
-    if (key_released) {
+    // Check for extended key sequence (0xE0)
+    if (scan_code == 0xE0) {
+        extended_key_sequence = true;
+        return; // Wait for the next byte
+    }
+
+    if (extended_key_sequence) {
+        scan_code = ps2_read_data();
+        extended_key_sequence = false; // Reset the flag
+
         switch (scan_code) {
-            case 0x2A: shift_pressed = false; break; // Left Shift
-            case 0x36: shift_pressed = false; break; // Right Shift
-            case 0x1D: ctrl_pressed = false; break;  // Ctrl
-            case 0x38: alt_pressed = false; break;   // Alt
-        }
-    } else {
-        switch (scan_code) {
-            case 0x2A: shift_pressed = true; break; // Left Shift
-            case 0x36: shift_pressed = true; break; // Right Shift
-            case 0x1D: ctrl_pressed = true; break;  // Ctrl
-            case 0x38: alt_pressed = true; break;   // Alt
-            case 0xe0:
-            ps2_wait_output();
-            switch (ps2_read_data())
-            {
             case CURSOR_UP:
-                if(cursor_y != 0){
-                    cursor_y--;
-                }
+                if (cursor_y > 0) cursor_y--;
                 update_cursor(cursor_x, cursor_y);
                 break;
             case CURSOR_DOWN:
-                if(cursor_y != 24){
-                    cursor_y++;
-                }
+                if (cursor_y < 24) cursor_y++;
                 update_cursor(cursor_x, cursor_y);
                 break;
             case CURSOR_LEFT:
-                if(cursor_x != 0){
-                    cursor_x--;
-                }
+                if (cursor_x > 0) cursor_x--;
                 update_cursor(cursor_x, cursor_y);
                 break;
             case CURSOR_RIGHT:
-                if(cursor_x != 79){
-                    cursor_x++;
-                }
+                if (cursor_x < 79) cursor_x++;
                 update_cursor(cursor_x, cursor_y);
                 break;
             default:
                 break;
+        }
+    } else {
+        key_released = scan_code & 0x80;
+        scan_code &= 0x7F; // Mask out the release bit
+
+        if (key_released) {
+            switch (scan_code) {
+                case 0x2A: shift_pressed = false; break; // Left Shift
+                case 0x36: shift_pressed = false; break; // Right Shift
+                case 0x1D: ctrl_pressed = false; break;  // Ctrl
+                case 0x38: alt_pressed = false; break;   // Alt
             }
-            break;
-            default:
-                ps2_handle_special(scan_code);
-                if (keymap[scan_code]) {
-                    key = keymap[scan_code];
-                    new_key_press = true; // Set new key press flag
-                    
-                    switch (key) {
-                        case ESCAPE:
-                            key = 0x1b;
-                            break;
-                        default:
-                            if(shift_pressed){
-                                key = keycodes_in_uppercase(key);
-                            }
-                            break;
+        } else {
+            switch (scan_code) {
+                case 0x2A: shift_pressed = true; break; // Left Shift
+                case 0x36: shift_pressed = true; break; // Right Shift
+                case 0x1D: ctrl_pressed = true; break;  // Ctrl
+                case 0x38: alt_pressed = true; break;   // Alt
+                default:
+                    ps2_handle_special(scan_code);
+                    if (keymap[scan_code]) {
+                        key = keymap[scan_code];
+                        new_key_press = true; // Set new key press flag
+
+                        switch (key) {
+                            case ESCAPE:
+                                key = 0x1b;
+                                break;
+                            default:
+                                if (shift_pressed) {
+                                    key = keycodes_in_uppercase(key);
+                                }
+                                break;
+                        }
                     }
-                }
-                break;
+                    break;
+            }
+            // If the scan code is not recognized, process it normally
+            ps2_handle_special(scan_code);
         }
     }
 }
 
 void ps2_handle_special(unsigned char scancode) {
     // Handle key presses to update LED state
-    switch (scancode) {
-        case 0x3A:  // CapsLock pressed
-            leds_state ^= PS2_LED_CAPS_LOCK;
-            ps2_set_leds(leds_state);
-            break;
-        case 0x45:  // NumLock pressed
-            leds_state ^= PS2_LED_NUM_LOCK;
-            ps2_set_leds(leds_state);
-            break;
-        case 0x46:  // ScrollLock pressed
-            leds_state ^= PS2_LED_SCROLL_LOCK;
-            ps2_set_leds(leds_state);
-            break;
-        default:
-            // Handle other key presses if necessary
-            break;
+    if(!scroll_lock || !capslock || !numlock)
+    {
+        switch (scancode) {
+            case CAPSLOCK:  // CapsLock pressed
+                capslock = true;
+                leds_state ^= PS2_LED_CAPS_LOCK;
+                ps2_write_command(PS2_CMD_SET_LED);
+                ps2_write_data(leds_state);
+                printf("CapsLock Pressed");
+                break;
+            case NUMLOCK:  // NumLock pressed
+                numlock = true;
+                leds_state ^= PS2_LED_NUM_LOCK;
+                ps2_write_command(PS2_CMD_SET_LED);
+                ps2_write_data(leds_state);
+                printf("NumLock Pressed");
+                break;
+            case SCROLLLOCK:  // ScrollLock pressed
+                scroll_lock = true;
+                leds_state ^= PS2_LED_SCROLL_LOCK;
+                ps2_write_command(PS2_CMD_SET_LED);
+                ps2_write_data(leds_state);
+                printf("ScrollLock Pressed");
+                break;
+            default:
+                // Handle other key presses if necessary
+                break;
+        }
     }
-}
-
-void ps2_set_leds(unsigned char leds) {
-    // Send command to set keyboard LEDs
-    ps2_write_command(PS2_CMD_SET_LED);
-    ps2_write_data(leds);
 }
 
 uint8_t getch() {

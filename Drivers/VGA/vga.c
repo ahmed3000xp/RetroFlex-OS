@@ -1,4 +1,4 @@
-// Copyright (C) 2024 The RetroFlex OS Project
+// Copyright (C) 2024 Ahmed
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -100,6 +100,9 @@ bool set_gpu_mode(uint8_t mode) {
             }
 
             outb(0x3C0, 0x20);
+
+            // Set the VGA Mode Register to Mode 0x13
+            outb(0x03D4, 0x0E); outb(0x03D5, 0x63);  // Set Mode Register to 0x13
 
             memset((void*)0xA0000, 0, 320 * 200);
 
