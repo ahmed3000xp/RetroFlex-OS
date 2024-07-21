@@ -1,4 +1,4 @@
-// Copyright (C) 2024 The RetroFlex OS Project
+// Copyright (C) 2024 Ahmed
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
