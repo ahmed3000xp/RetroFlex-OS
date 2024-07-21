@@ -1,4 +1,4 @@
-// Copyright (C) 2024 The RetroFlex OS Project
+// Copyright (C) 2024 Ahmed
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -24,10 +24,15 @@ extern void test_ints();
 void main(uint32_t magic, struct multiboot_info* mb_info) {
     uint8_t kc = 0;
 
-    printf("RetroFlex OS  Copyright (C) 2024 The Developer\n");
+    printf("RetroFlex OS  Copyright (C) 2024 Ahmed\n");
     printf("This program comes with ABSOLUTELY NO WARRANTY; for details type 'show w'\n");
     printf("This is free software, and you are welcome to redistribute it\n");
     printf("under certain conditions; type 'show c' for details.\n\n");
+
+    dbg_printf("RetroFlex OS  Copyright (C) 2024 Ahmed\n");
+    dbg_printf("This program comes with ABSOLUTELY NO WARRANTY; for details type 'show w'\n");
+    dbg_printf("This is free software, and you are welcome to redistribute it\n");
+    dbg_printf("under certain conditions; type 'show c' for details.\n\n");
 
     dbg_printf("[%d] Initializing GDT\n",ticks);
     init_GDT();
@@ -57,8 +62,8 @@ void main(uint32_t magic, struct multiboot_info* mb_info) {
 
     printf("Date %d/%d/%d\n", day, month, current_year);
     
-    while(kc != 0x1b) {
-        if(kbhit()) {
+    while(kc != 0x1b){
+        if(kbhit()){
             kc = getch();
             putc(kc);
         }
