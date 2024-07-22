@@ -153,13 +153,13 @@ unsigned char* exception_messages[] = {
 void isr_handler(struct InterruptRegisters* regs){
     if (regs->int_no < 32){
         switch(regs->int_no){
-            case 0:
-                handle_div_zero();
-                break;
             default:
                 printf(exception_messages[regs->int_no]);
                 putc('\n');
                 printf("Exception! System Halted\n");
+                dbg_printf(exception_messages[regs->int_no]);
+                dbg_putc('\n');
+                dbg_printf("Exception! System Halted");
                 for(;;);
                 break;
         }
