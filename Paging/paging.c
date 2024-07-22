@@ -37,7 +37,7 @@ void map_page(uint32_t physical_addr, uint32_t virtual_addr, uint32_t flags) {
     } else {
         // Page table not present, allocate and set it up
         uint32_t page_table_addr = (uint32_t)page_table;
-        set_page_directory_entry(dir_index, page_table_addr, 0x003); // Present, RW
+        set_page_directory_entry(dir_index, page_table_addr, 0x007); // Present, RW, U/S
     }
 
     // Set up the page table to point to the physical address with specified flags
@@ -52,11 +52,11 @@ void init_paging() {
 
     // Identity map the first 4MB of memory (0x00000000 to 0x00400000)
     for (uint32_t i = 0; i < PAGE_TABLE_ENTRIES; i++) {
-        set_page_table_entry(i, i * PAGE_SIZE, 0x003); // Present, RW
+        set_page_table_entry(i, i * PAGE_SIZE, 0x007); // Present, RW, U/S
     }
 
     // Map the page table into the page directory
-    set_page_directory_entry(0, (uint32_t)page_table, 0x003); // Present, RW
+    set_page_directory_entry(0, (uint32_t)page_table, 0x007); // Present, RW, U/S
 
     // Map virtual address 0xc0000000 to physical address 0x00100000
     map_page(0x00100000, 0xc0000000, 0x007); // Present, RW, U/S
