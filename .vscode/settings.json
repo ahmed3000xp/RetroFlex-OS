@@ -9,6 +9,8 @@
         "pit.h": "c",
         "cmos.h": "c",
         "gdt.h": "c",
-        "ps2.h": "c"
+        "ps2.h": "c",
+        "compare": "c",
+        "cstdint": "c"
     }
 }

@@ -28,25 +28,25 @@ const char* multiboot_mem_type_2_text(uint32_t type){
 
 void read_multiboot_header(uint32_t magic, struct multiboot_info* mb_info){
     if (magic != 0x2BADB002) {
-        printf("Invalid magic number: 0x%x\n", magic);
+        dbg_printf("Invalid magic number: 0x%x\n", magic);
         return;
     }
 
     if (mb_info->flags & 0x1) {
         uint32_t mem_lower = mb_info->mem_lower;
         uint32_t mem_upper = mb_info->mem_upper;
-        printf("Lower memory: %u KB\n", mem_lower);
-        printf("Upper memory: %u KB\n", mem_upper);
+        dbg_printf("Lower memory: %u KB\n", mem_lower);
+        dbg_printf("Upper memory: %u KB\n", mem_upper);
     }
 
     if (mb_info->flags & 0x40) {
         struct multiboot_mmap_entry* mmap = (struct multiboot_mmap_entry*)mb_info->mmap_addr;
         uint32_t mmap_length = mb_info->mmap_length;
-        printf("Memory map:\n");
+        dbg_printf("Memory map:\n");
         for (struct multiboot_mmap_entry* entry = mmap;
              (uint8_t*)entry < (uint8_t*)mmap + mmap_length;
              entry = (struct multiboot_mmap_entry*)((uint8_t*)entry + entry->size + sizeof(entry->size))) {
-            printf("Base address: 0x%x%x, Length: 0x%x%x, Type: %s (0x%x)\n",
+            dbg_printf("Base address: 0x%x%x, Length: 0x%x%x, Type: %s (0x%x)\n",
                    entry->addr_high, entry->addr_low,
                    entry->len_high, entry->len_low,multiboot_mem_type_2_text(entry->type),
                    entry->type);

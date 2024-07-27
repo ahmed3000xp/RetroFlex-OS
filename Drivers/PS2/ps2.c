@@ -114,30 +114,31 @@ uint8_t keycodes_in_uppercase(uint8_t k){
 void process_scan_code(uint8_t scan_code) {
     // Check for extended key sequence (0xE0)
     if (scan_code == 0xE0) {
-        extended_key_sequence = true;
+        extended_key_sequence_1 = true;
         return; // Wait for the next byte
     }
 
-    if (extended_key_sequence) {
+    else if (scan_code == 0xE1) {
+        extended_key_sequence_2 = true;
+        return; // Wait for the next byte
+    }
+
+    if (extended_key_sequence_1) {
         scan_code = ps2_read_data();
-        extended_key_sequence = false; // Reset the flag
+        extended_key_sequence_1 = false; // Reset the flag
 
         switch (scan_code) {
             case CURSOR_UP:
-                if (cursor_y > 0) cursor_y--;
-                update_cursor(cursor_x, cursor_y);
+                key = scan_code;
                 break;
             case CURSOR_DOWN:
-                if (cursor_y < 24) cursor_y++;
-                update_cursor(cursor_x, cursor_y);
+                key = scan_code;
                 break;
             case CURSOR_LEFT:
-                if (cursor_x > 0) cursor_x--;
-                update_cursor(cursor_x, cursor_y);
+                key = scan_code;
                 break;
             case CURSOR_RIGHT:
-                if (cursor_x < 79) cursor_x++;
-                update_cursor(cursor_x, cursor_y);
+                key = scan_code;
                 break;
             default:
                 break;
@@ -160,7 +161,6 @@ void process_scan_code(uint8_t scan_code) {
                 case 0x1D: ctrl_pressed = true; break;  // Ctrl
                 case 0x38: alt_pressed = true; break;   // Alt
                 default:
-                    ps2_handle_special(scan_code);
                     if (keymap[scan_code]) {
                         key = keymap[scan_code];
                         new_key_press = true; // Set new key press flag
@@ -178,41 +178,6 @@ void process_scan_code(uint8_t scan_code) {
                     }
                     break;
             }
-            // If the scan code is not recognized, process it normally
-            ps2_handle_special(scan_code);
-        }
-    }
-}
-
-void ps2_handle_special(unsigned char scancode) {
-    // Handle key presses to update LED state
-    if(!scroll_lock || !capslock || !numlock)
-    {
-        switch (scancode) {
-            case CAPSLOCK:  // CapsLock pressed
-                capslock = true;
-                leds_state ^= PS2_LED_CAPS_LOCK;
-                ps2_write_command(PS2_CMD_SET_LED);
-                ps2_write_data(leds_state);
-                printf("CapsLock Pressed");
-                break;
-            case NUMLOCK:  // NumLock pressed
-                numlock = true;
-                leds_state ^= PS2_LED_NUM_LOCK;
-                ps2_write_command(PS2_CMD_SET_LED);
-                ps2_write_data(leds_state);
-                printf("NumLock Pressed");
-                break;
-            case SCROLLLOCK:  // ScrollLock pressed
-                scroll_lock = true;
-                leds_state ^= PS2_LED_SCROLL_LOCK;
-                ps2_write_command(PS2_CMD_SET_LED);
-                ps2_write_data(leds_state);
-                printf("ScrollLock Pressed");
-                break;
-            default:
-                // Handle other key presses if necessary
-                break;
         }
     }
 }

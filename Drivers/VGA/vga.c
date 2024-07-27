@@ -195,10 +195,12 @@ void putc(char c) {
             cursor_x = 0;
             break;
         case '\t':
-            cursor_x = (cursor_x + tap_len) & ~(tap_len - 1);
-            if (cursor_x >= width) {
-                cursor_x = 0;
-                cursor_y++;
+            for(char i = 0; i < tap_len; i++){
+                cursor_x++;
+                if (cursor_x >= width) {
+                    cursor_x = 0;
+                    cursor_y++;
+                }
             }
             break;
         case '\b':
@@ -208,7 +210,6 @@ void putc(char c) {
                 cursor_y--;
                 cursor_x = width - 1;
             }
-            text_memory[cursor_x + cursor_y * width] = ' ' | (current_color << 8);
             break;
         default:
             text_memory[cursor_x + cursor_y * width] = c | (current_color << 8);
@@ -437,14 +438,13 @@ void dbg_putc(char c){
             outb(0xe9, '\n');
             break;
         case '\t':
-            outb(0xe9, ' ');
-            outb(0xe9, ' ');
-            outb(0xe9, ' ');
-            outb(0xe9, ' ');
+            for(char i = 0; i < tap_len; i++){
+                outb(0xe9, '\033');
+                outb(0xe9, '[');
+                outb(0xe9, 'C');
+            }
             break;
         case '\b':
-            outb(0xe9, '\b');
-            outb(0xe9, ' ');
             outb(0xe9, '\b');
             break;
         default:
