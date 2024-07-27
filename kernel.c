@@ -44,7 +44,7 @@ void main(uint32_t magic, struct multiboot_info* mb_info) {
     init_IDT();
 
     dbg_printf("[%d] Initializing PIT\n",ticks);
-    init_PIT(60);
+    init_PIT(1000);
 
     dbg_printf("[%d] Installing PIT IRQ\n",ticks);
     install_PIT_irq();
@@ -62,13 +62,5 @@ void main(uint32_t magic, struct multiboot_info* mb_info) {
 
     printf("Date %d/%d/%d\n", day, month, current_year);
     
-    while(kc != 0x1b){
-        if(kbhit()){
-            kc = getch();
-            putc(kc);
-        }
-    }
-    
-    printf("\nIt is safe to turn off or reset your PC\n");
     return;
 }

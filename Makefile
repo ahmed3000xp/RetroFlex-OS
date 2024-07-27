@@ -13,26 +13,33 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+COMPILER_FLAGS=-m32 -Werror -ffreestanding -fno-stack-protector -c
+ASSEMBLER_FLAGS=-f elf
+LINKER_FLAGS=-m elf_i386 -T linker.ld
+QEMU_FLAGS=-debugcon stdio
+QEMU_NATIVE_FLAGS=-enable-kvm -cpu host -debugcon stdio
+
 kernel:
-	gcc -m32 -Werror -ffreestanding -fno-stack-protector -c kernel.c -o build/kernelc.o
-	gcc -m32 -Werror -ffreestanding -fno-stack-protector -c Headers/util.c -o build/util.o
-	gcc -m32 -Werror -ffreestanding -fno-stack-protector -c Drivers/VGA/vga.c -o build/vga.o
-	gcc -m32 -Werror -ffreestanding -fno-stack-protector -c GDT/gdt.c -o build/gdtc.o
-	gcc -m32 -Werror -ffreestanding -fno-stack-protector -c IDT/idt.c -o build/idtc.o
-	gcc -m32 -Werror -ffreestanding -fno-stack-protector -c Drivers/Speaker/speaker.c -o build/speaker.o
-	gcc -m32 -Werror -ffreestanding -fno-stack-protector -c Drivers/PIT/pit.c -o build/pit.o
-	gcc -m32 -Werror -ffreestanding -fno-stack-protector -c Drivers/CMOS/cmos.c -o build/cmos.o
-	gcc -m32 -Werror -ffreestanding -fno-stack-protector -c Drivers/PS2/ps2.c -o build/ps2.o
-	gcc -m32 -Werror -ffreestanding -fno-stack-protector -c Headers/multiboot.c -o build/multiboot.o
-	gcc -m32 -Werror -ffreestanding -fno-stack-protector -c Paging/paging.c -o build/pagingc.o
+	gcc $(COMPILER_FLAGS) kernel.c -o build/kernelc.o
+	gcc $(COMPILER_FLAGS) Headers/util.c -o build/util.o
+	gcc $(COMPILER_FLAGS) Drivers/VGA/vga.c -o build/vga.o
+	gcc $(COMPILER_FLAGS) GDT/gdt.c -o build/gdtc.o
+	gcc $(COMPILER_FLAGS) IDT/idt.c -o build/idtc.o
+	gcc $(COMPILER_FLAGS) Drivers/Speaker/speaker.c -o build/speaker.o
+	gcc $(COMPILER_FLAGS) Drivers/PIT/pit.c -o build/pit.o
+	gcc $(COMPILER_FLAGS) Drivers/CMOS/cmos.c -o build/cmos.o
+	gcc $(COMPILER_FLAGS) Drivers/PS2/ps2.c -o build/ps2.o
+	gcc $(COMPILER_FLAGS) Headers/multiboot.c -o build/multiboot.o
+	gcc $(COMPILER_FLAGS) Paging/paging.c -o build/pagingc.o
+	gcc $(COMPILER_FLAGS) Drivers/PCI/pci.c -o build/pci.o
 
-	nasm -f elf Boot/boot.asm -o build/boot.o
-	nasm -f elf kernel.asm -o build/kernelasm.o
-	nasm -f elf GDT/gdt.asm -o build/gdtasm.o
-	nasm -f elf IDT/idt.asm -o build/idtasm.o
-	nasm -f elf Paging/paging.asm -o build/pagingasm.o
+	nasm $(ASSEMBLER_FLAGS) Boot/boot.asm -o build/boot.o
+	nasm $(ASSEMBLER_FLAGS) kernel.asm -o build/kernelasm.o
+	nasm $(ASSEMBLER_FLAGS) GDT/gdt.asm -o build/gdtasm.o
+	nasm $(ASSEMBLER_FLAGS) IDT/idt.asm -o build/idtasm.o
+	nasm $(ASSEMBLER_FLAGS) Paging/paging.asm -o build/pagingasm.o
 
-	ld -m elf_i386 -T linker.ld -o build/kernel build/*.o
+	ld $(LINKER_FLAGS) -o build/kernel build/*.o
 
 	mv build/kernel build/iso/boot/kernel
 
@@ -40,7 +47,10 @@ disk:
 	grub-mkrescue -o build/os.iso build/iso/
 
 qemu:
-	qemu-system-x86_64 -debugcon stdio build/os.iso
+	qemu-system-x86_64 $(QEMU_FLAGS) build/os.iso
+
+qemu_native:
+	qemu-system-x86_64 $(QEMU_NATIVE_FLAGS) build/os.iso
 
 clean: build/*.o build/*.iso build/iso/boot/kernel
 	rm build/*.o build/*.iso build/iso/boot/kernel
