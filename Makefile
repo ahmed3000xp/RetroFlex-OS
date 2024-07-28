@@ -32,6 +32,7 @@ kernel:
 	gcc $(COMPILER_FLAGS) Headers/multiboot.c -o build/multiboot.o
 	gcc $(COMPILER_FLAGS) Paging/paging.c -o build/pagingc.o
 	gcc $(COMPILER_FLAGS) Drivers/PCI/pci.c -o build/pci.o
+	gcc $(COMPILER_FLAGS) Drivers/ATA/ata.c -o build/ata.o
 
 	nasm $(ASSEMBLER_FLAGS) Boot/boot.asm -o build/boot.o
 	nasm $(ASSEMBLER_FLAGS) kernel.asm -o build/kernelasm.o
