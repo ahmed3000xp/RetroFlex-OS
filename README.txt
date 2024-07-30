@@ -2,6 +2,7 @@ RetroFlex OS Installation Instructions
 For Windows Users:
 
 If you are using Windows, you'll need to install WSL (Windows Subsystem for Linux) and then install a GNU+Linux distribution through the Microsoft Store.
+
 For Debian/Ubuntu/Ubuntu-based Systems:
 
 Run the following command:
