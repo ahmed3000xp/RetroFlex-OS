@@ -13,8 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "Drivers/CMOS/cmos.h"
-#include "Drivers/PS2/ps2.h"
+#include "Drivers/ATA/ata.h"
 #include "Headers/multiboot.h"
 #include "GDT/gdt.h"
 #include "Paging/paging.h"
@@ -23,6 +22,8 @@ extern void test_ints();
 
 void main(uint32_t magic, struct multiboot_info* mb_info) {
     uint8_t kc = 0;
+    struct DriveInfo drive_info;
+    char buffer[512];
 
     printf("RetroFlex OS  Copyright (C) 2024 Ahmed\n");
     printf("This program comes with ABSOLUTELY NO WARRANTY; for details type 'show w'\n");
@@ -55,12 +56,23 @@ void main(uint32_t magic, struct multiboot_info* mb_info) {
     dbg_printf("[%d] Installing PS/2 Controller IRQ\n",ticks);
     install_keyboard_irq();
 
+    dbg_printf("[%d] Checking ATA controller\n", ticks);
+    if(!check_ata_controller())
+	    dbg_printf("[%d] Didn't Find ATA controller\n", ticks);
+
     dbg_printf("[%d] Reading RTC\n",ticks);
     read_rtc();
 
     printf("Time %d:%d:%d\n", hour, minute, second);
 
     printf("Date %d/%d/%d\n", day, month, current_year);
+
+    identify_drive(&drive_info, false, false);
+    read_sector(0, buffer, 512, &drive_info);
+    for(int i = 0; i < 512; i++){
+        printf("%x ", buffer[i]);
+    }
+    print_drive_info(&drive_info);
     
     return;
 }

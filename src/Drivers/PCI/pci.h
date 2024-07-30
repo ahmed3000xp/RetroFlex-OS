@@ -16,9 +16,6 @@
 #include "../../Headers/stdint.h"
 #include "../../Headers/util.h"
 
-#ifndef PCI_H
-#define PCI_H
-
 struct header_0 {
     uint16_t vendor_id;
     uint16_t device_id;
@@ -143,5 +140,3 @@ void* readPCIConfig(uint8_t bus, uint8_t slot, uint8_t func);
 
 void checkFunction(uint8_t bus, uint8_t device, uint8_t function);
 void checkDevice(uint8_t bus, uint8_t device);
-
-#endif // PCI_H

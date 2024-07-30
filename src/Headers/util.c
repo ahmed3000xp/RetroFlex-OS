@@ -52,6 +52,17 @@ uint32_t indw(uint16_t port) {
     return value;
 }
 
+void insw(uint16_t port, void *buffer, uint32_t count) {
+    asm volatile ("rep insw" : "+D"(buffer), "+c"(count) : "d"(port) : "memory");
+}
+
+void outsw(uint16_t port, const void *buffer, uint32_t count) {
+    const uint16_t *tmp = (const uint16_t*)buffer;
+    for (uint32_t i = 0; i < count / sizeof(uint16_t); i++) {
+        outw(port, tmp[i]);
+    }
+}
+
 void disable_interrupts(){
     asm volatile ("cli");
 }

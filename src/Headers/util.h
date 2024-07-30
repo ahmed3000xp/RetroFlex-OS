@@ -22,6 +22,8 @@ void outw(uint16_t port, uint16_t value);
 uint16_t inw(uint16_t port);
 void outdw(uint16_t port, uint32_t value);
 uint32_t indw(uint16_t port);
+void insw(uint16_t port, void *buffer, uint32_t count);
+void outsw(uint16_t port, const void *buffer, uint32_t count);
 void disable_interrupts();
 void enable_interrupts();
 unsigned long long __udivdi3(unsigned long long a, unsigned long long b);

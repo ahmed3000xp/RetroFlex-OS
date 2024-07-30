@@ -11,6 +11,7 @@
         "gdt.h": "c",
         "ps2.h": "c",
         "compare": "c",
-        "cstdint": "c"
+        "cstdint": "c",
+        "random": "c"
     }
 }

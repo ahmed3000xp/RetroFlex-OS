@@ -6,38 +6,41 @@ For Debian/Ubuntu/Ubuntu-based Systems:
 
 Run the following command:
 
-./install-debian.sh
+sudo apt install xorriso grub-common qemu-system-x86 nasm gcc make -y
 
 For Fedora Systems:
 
 Run the following command:
 
-./install-fedora.sh
+sudo dnf install -y xorriso nasm qemu grub2 virt-manager virt-viewer dnsmasq vde2 bridge-utils nmap-ncat @development-tools bison flex gmp-devel libmpc-devel mpfr-devel texinfo gcc make
 
 For Arch/Arch-Based Systems:
 
 Run the following command:
 
-./install-arch.sh
+sudo pacman -S --noconfirm xorriso nasm qemu grub virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat base-devel bison flex gmp libmpc mpfr texinfo gcc make
 
 Yeah, I use Arch, btw.
 Compiling and Running RetroFlex OS
 
 After installation, compile and run RetroFlex OS by executing:
 
-./run.sh
+make all
 
 Troubleshooting Permissions Issue
 
 If you encounter a permissions error during ISO creation, such as:
 
-rm: remove write-protected regular file 'build/os.iso'?
-mv: replace 'build/iso/boot/kernel', overriding mode 0755 (rwxr-xr-x)?
+rm: remove write-protected regular file '../disk.img'?
 ...
 libburn : SORRY : Failed to open device (a pseudo-drive) : Permission denied
 ...
-qemu-system-x86_64: Could not open 'build/os.iso': Permission denied
+qemu-system-x86_64: Could not open '../disk.img': Permission denied
 
 Try running the script with elevated privileges using sudo:
 
-sudo ./run.sh
+sudo make all
+
+If you have an x86 based Computer then run the OS on the CPU itself by running
+
+make qemu_native
