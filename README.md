@@ -1,10 +1,14 @@
-RetroFlex OS Installation Instructions
-For Windows Users:
+# RetroFlex OS Project
 
+## Overview
+RetroFlex is a UNIX-like OS compatible with GNU+Linux programs and its own programs.
+
+## Installation Instructions
+
+### For Windows Users:
 If you are using Windows, you'll need to install WSL (Windows Subsystem for Linux) and then install a GNU+Linux distribution through the Microsoft Store.
 
-For Debian/Ubuntu/Ubuntu-based Systems:
-
+### For Debian/Ubuntu/Ubuntu-based Systems:
 Run the following command:
 
 sudo apt install xorriso grub-common qemu-system-x86 nasm gcc make -y
@@ -42,6 +46,12 @@ Try running the script with elevated privileges using sudo:
 
 sudo make all
 
-If you have an x86 based Computer then run the OS on the CPU itself by running
+Running on x86 Hardware
+
+If you have an x86 based Computer then run the OS on the CPU itself by running:
 
 make qemu_native
+
+License
+
+This project is licensed under the GPL-3.0 license.
