@@ -46,7 +46,7 @@ Try running the script with elevated privileges using sudo:
 
 sudo make all
 
-Running on x86 Hardware
+#### Running on x86 Hardware
 
 If you have an x86 based Computer then run the OS on the CPU itself by running:
 

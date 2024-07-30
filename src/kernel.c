@@ -69,10 +69,10 @@ void main(uint32_t magic, struct multiboot_info* mb_info) {
 
     identify_drive(&drive_info, false, false);
     read_sector(0, buffer, 512, &drive_info);
-    for(int i = 0; i < 512; i++){
-        printf("%x ", buffer[i]);
-    }
     print_drive_info(&drive_info);
+    for(int i = 0; i < 512; i++){
+        dbg_printf("%c", buffer[i]);
+    }
     
     return;
 }
