@@ -52,6 +52,6 @@ If you have an x86 based Computer then run the OS on the CPU itself by running:
 
 make qemu_native
 
-License
+##### License
 
 This project is licensed under the GPL-3.0 license.
