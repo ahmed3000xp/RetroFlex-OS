@@ -13,26 +13,27 @@ Run the following command:
 
 sudo apt install xorriso grub-common qemu-system-x86 nasm gcc make -y
 
-For Fedora Systems:
+### For Fedora Systems:
 
 Run the following command:
 
 sudo dnf install -y xorriso nasm qemu grub2 virt-manager virt-viewer dnsmasq vde2 bridge-utils nmap-ncat @development-tools bison flex gmp-devel libmpc-devel mpfr-devel texinfo gcc make
 
-For Arch/Arch-Based Systems:
+### For Arch/Arch-Based Systems:
 
 Run the following command:
 
 sudo pacman -S --noconfirm xorriso nasm qemu grub virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat base-devel bison flex gmp libmpc mpfr texinfo gcc make
 
 Yeah, I use Arch, btw.
-Compiling and Running RetroFlex OS
+
+### Compiling and Running RetroFlex OS
 
 After installation, compile and run RetroFlex OS by executing:
 
 make all
 
-Troubleshooting Permissions Issue
+### Troubleshooting Permissions Issue
 
 If you encounter a permissions error during ISO creation, such as:
 
@@ -46,12 +47,12 @@ Try running the script with elevated privileges using sudo:
 
 sudo make all
 
-#### Running on x86 Hardware
+### Running on x86 Hardware
 
 If you have an x86 based Computer then run the OS on the CPU itself by running:
 
 make qemu_native
 
-##### License
+#### License
 
 This project is licensed under the GPL-3.0 license.
