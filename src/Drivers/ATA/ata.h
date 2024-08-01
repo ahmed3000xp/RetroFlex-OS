@@ -56,7 +56,7 @@ static uint16_t ATA_SECONDARY_DRIVE_SELECT_PORT = 0x176;
 #define SECTOR_SIZE 512
 
 void select_drive(bool is_secondary, bool is_slave);
-void wait_for_ready();
+void wait_for_ready(bool is_secondary);
 void identify_drive(struct DriveInfo *drive_info, bool is_slave, bool is_secondary);
 bool check_ata_controller();
 void write_command(uint16_t command_port, uint8_t command, uint64_t lba, uint32_t sector_count);
@@ -64,8 +64,8 @@ void read_sector_lba48(uint64_t lba, void *buffer, uint32_t buffer_size, struct 
 void write_sector_lba48(uint64_t lba, const void *buffer, uint32_t buffer_size, struct DriveInfo *drive_info);
 void read_sector_lba28(uint32_t lba, void *buffer, uint32_t buffer_size, struct DriveInfo *drive_info);
 void write_sector_lba28(uint32_t lba, const void *buffer, uint32_t buffer_size, struct DriveInfo *drive_info);
+void read_sector_chs(uint16_t cylinder, uint8_t head, uint8_t sector, void *buffer, uint32_t buffer_size, struct DriveInfo *drive_info);
+void write_sector_chs(uint16_t cylinder, uint8_t head, uint8_t sector, const void *buffer, uint32_t buffer_size, struct DriveInfo *drive_info);
 void read_sector(uint32_t sector, void *buffer, uint32_t buffer_size, struct DriveInfo *drive_info);
 void write_sector(uint32_t sector, const void *buffer, uint32_t buffer_size, struct DriveInfo *drive_info);
 void print_drive_info(struct DriveInfo *drive_info);
-
-

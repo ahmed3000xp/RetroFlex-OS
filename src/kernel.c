@@ -56,16 +56,16 @@ void main(uint32_t magic, struct multiboot_info* mb_info) {
     dbg_printf("[%d] Installing PS/2 Controller IRQ\n",ticks);
     install_keyboard_irq();
 
-    dbg_printf("[%d] Checking ATA controller\n", ticks);
-    if(!check_ata_controller())
-	    dbg_printf("[%d] Didn't Find ATA controller\n", ticks);
-
     dbg_printf("[%d] Reading RTC\n",ticks);
     read_rtc();
 
     printf("Time %d:%d:%d\n", hour, minute, second);
 
     printf("Date %d/%d/%d\n", day, month, current_year);
+
+    dbg_printf("[%d] Checking ATA controller\n", ticks);
+    if(!check_ata_controller())
+	    dbg_printf("[%d] Didn't Find ATA controller\n", ticks);
 
     identify_drive(&drive_info, false, false);
     read_sector(0, buffer, 512, &drive_info);

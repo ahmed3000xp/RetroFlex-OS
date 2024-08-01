@@ -49,7 +49,7 @@ kernel:
 	$(AS) $(ASMFLAGS) IDT/idt.asm -o $(BUILD_DIR)/idtasm.o
 	$(AS) $(ASMFLAGS) Paging/paging.asm -o $(BUILD_DIR)/pagingasm.o
 
-	$(LD) $(LDFLAGS) -o $(BUILD_DIR)/kernel $(BUILD_DIR)/*.o
+	$(LD) $(LDFLAGS) -o $(BUILD_DIR)/kernel $(BUILD_DIR)/boot.o $(BUILD_DIR)/kernelc.o $(BUILD_DIR)/kernelasm.o $(BUILD_DIR)/gdtc.o $(BUILD_DIR)/gdtasm.o $(BUILD_DIR)/idtc.o $(BUILD_DIR)/idtasm.o $(BUILD_DIR)/pagingc.o $(BUILD_DIR)/pagingasm.o $(BUILD_DIR)/util.o $(BUILD_DIR)/vga.o $(BUILD_DIR)/speaker.o $(BUILD_DIR)/pit.o $(BUILD_DIR)/cmos.o $(BUILD_DIR)/ps2.o $(BUILD_DIR)/multiboot.o $(BUILD_DIR)/pci.o $(BUILD_DIR)/ata.o
 
 disk:
 	dd if=/dev/zero of=$(IMG_DIR)/disk.img bs=512 count=2048000
@@ -79,5 +79,5 @@ qemu:
 qemu_native:
 	qemu-system-x86_64 $(QNFLAGS) -hda $(IMG_DIR)/disk.img
 
-clean: $(BUILD_DIR)/*.o $(IMG_DIR)/disk.img $(BUILD_DIR)/kernel
-	rm $(BUILD_DIR)/*.o $(IMG_DIR)/disk.img $(BUILD_DIR)/kernel
+clean:
+	rm -f $(BUILD_DIR)/*.o $(IMG_DIR)/disk.img $(BUILD_DIR)/kernel

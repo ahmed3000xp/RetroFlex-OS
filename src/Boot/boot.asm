@@ -35,5 +35,5 @@ halt_kernel:
     jmp halt_kernel
 
 section .bss
-    resb 65536              
+    resb 65536             
 stack_space:

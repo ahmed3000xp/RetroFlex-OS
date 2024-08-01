@@ -3,7 +3,8 @@ ENTRY(start)
 SECTIONS
 {
     . = 0x00100000;
-    .text : { *(.text) }
-    .data : { *(.data) }
-    .bss  : { *(.bss) }
+    
+    .text ALIGN(4) : { *(.text) }
+    .data ALIGN(4) : { *(.data) }
+    .bss  ALIGN(4) : { *(.bss) }
 }

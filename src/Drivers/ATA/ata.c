@@ -21,8 +21,9 @@ void select_drive(bool is_secondary, bool is_slave) {
     outb(drive_select_port, drive_select_value);
 }
 
-void wait_for_ready() {
-    while ((inb(ATA_PRIMARY_COMMAND_PORT) & 0x80) != 0);
+void wait_for_ready(bool is_secondary) {
+    uint16_t command_port = is_secondary ? ATA_SECONDARY_COMMAND_PORT : ATA_PRIMARY_COMMAND_PORT;
+    while (inb(command_port) & 0x80);
 }
 
 void identify_drive(struct DriveInfo *drive_info, bool is_slave, bool is_secondary) {
@@ -30,32 +31,18 @@ void identify_drive(struct DriveInfo *drive_info, bool is_slave, bool is_seconda
 
     uint16_t identify_data[256] = {0};
 
-    if(!is_secondary){
-        // Select the drive (0xA0 for master, 0xB0 for slave)
-        outb(ATA_PRIMARY_DRIVE_SELECT_PORT, is_slave ? 0xB0 : 0xA0);
+    select_drive(is_secondary, is_slave);
 
-        // Send IDENTIFY command
-        outb(ATA_PRIMARY_COMMAND_PORT, ATA_IDENTIFY_COMMAND);
+    // Send IDENTIFY command
+    uint16_t command_port = is_secondary ? ATA_SECONDARY_COMMAND_PORT : ATA_PRIMARY_COMMAND_PORT;
+    outb(command_port, ATA_IDENTIFY_COMMAND);
 
-        // Polling until the drive is ready
-        while (inb(ATA_PRIMARY_COMMAND_PORT) & 0x80);
+    // Polling until the drive is ready
+    wait_for_ready(is_secondary);
 
-        // Read the IDENTIFY data
-        insw(ATA_PRIMARY_DATA_PORT, identify_data, 256);
-    }
-    else {
-        // Select the drive (0xA0 for master, 0xB0 for slave)
-        outb(ATA_SECONDARY_DRIVE_SELECT_PORT, is_slave ? 0xB0 : 0xA0);
-
-        // Send IDENTIFY command
-        outb(ATA_SECONDARY_COMMAND_PORT, ATA_IDENTIFY_COMMAND);
-
-        // Polling until the drive is ready
-        while (inb(ATA_SECONDARY_COMMAND_PORT) & 0x80);
-
-        // Read the IDENTIFY data
-        insw(ATA_SECONDARY_DATA_PORT, identify_data, 256);
-    }
+    // Read the IDENTIFY data
+    uint16_t data_port = is_secondary ? ATA_SECONDARY_DATA_PORT : ATA_PRIMARY_DATA_PORT;
+    insw(data_port, identify_data, 256);
 
     // Check if the device is a drive
     if (identify_data[0] == 0x0000 || identify_data[0] == 0xFFFF) {
@@ -95,7 +82,7 @@ void identify_drive(struct DriveInfo *drive_info, bool is_slave, bool is_seconda
 
     // Determine addressing mode
     if (drive_info->number_lba_48_sectors > 0) {
-        drive_info->lba_48= true; // LBA48
+        drive_info->lba_48 = true; // LBA48
     } 
     if (drive_info->number_lba_28_sectors > 0) {
         drive_info->lba_28 = true; // LBA28
@@ -104,7 +91,7 @@ void identify_drive(struct DriveInfo *drive_info, bool is_slave, bool is_seconda
         drive_info->chs = true; // CHS
     }
 
-    drive_info->sector_size = identify_data[106] * SECTOR_SIZE;
+    drive_info->sector_size = SECTOR_SIZE; // Default sector size
 
     // Set drive type
     drive_info->drive_type = identify_data[0];
@@ -182,9 +169,15 @@ void read_sector_lba48(uint64_t lba, void *buffer, uint32_t buffer_size, struct 
     select_drive(drive_info->is_secondary, drive_info->is_slave);
 
     for (uint32_t i = 0; i < sector_count; i++) {
-        write_command(command_port, 0x24, lba, sector_count);
+        outb(command_port + 1, (sector_count >> 8) & 0xFF);
+        outb(command_port + 2, sector_count & 0xFF);
+        outb(command_port + 3, (lba >> 24) & 0xFF);
+        outb(command_port + 4, (lba >> 32) & 0xFF);
+        outb(command_port + 5, (lba >> 40) & 0xFF);
+        outb(command_port + 6, 0x40); // LBA mode
+        outb(command_port + 7, 0x24); // READ SECTOR(S) EXT command
 
-        wait_for_ready();
+        wait_for_ready(drive_info->is_secondary);
 
         insw(data_port, buffer, SECTOR_SIZE / 2);
         buffer = (uint8_t *)buffer + SECTOR_SIZE;
@@ -205,9 +198,15 @@ void write_sector_lba48(uint64_t lba, const void *buffer, uint32_t buffer_size, 
     select_drive(drive_info->is_secondary, drive_info->is_slave);
 
     for (uint32_t i = 0; i < sector_count; i++) {
-        write_command(command_port, 0x34, lba, sector_count);
+        outb(command_port + 1, (sector_count >> 8) & 0xFF);
+        outb(command_port + 2, sector_count & 0xFF);
+        outb(command_port + 3, (lba >> 24) & 0xFF);
+        outb(command_port + 4, (lba >> 32) & 0xFF);
+        outb(command_port + 5, (lba >> 40) & 0xFF);
+        outb(command_port + 6, 0x40); // LBA mode
+        outb(command_port + 7, 0x34); // WRITE SECTOR(S) EXT command
 
-        wait_for_ready();
+        wait_for_ready(drive_info->is_secondary);
 
         outsw(data_port, buffer, SECTOR_SIZE / 2);
         buffer = (const uint8_t *)buffer + SECTOR_SIZE;
@@ -221,26 +220,19 @@ void read_sector_lba28(uint32_t lba, void *buffer, uint32_t buffer_size, struct 
         return;
     }
 
-    uint32_t sector_size = drive_info->sector_size;
-    uint32_t sector_count = buffer_size / sector_size;
+    uint32_t sector_count = buffer_size / drive_info->sector_size;
     uint16_t command_port = drive_info->is_secondary ? ATA_SECONDARY_COMMAND_PORT : ATA_PRIMARY_COMMAND_PORT;
     uint16_t data_port = drive_info->is_secondary ? ATA_SECONDARY_DATA_PORT : ATA_PRIMARY_DATA_PORT;
-    uint16_t drive_select_port = drive_info->is_secondary ? ATA_SECONDARY_DRIVE_SELECT_PORT : ATA_PRIMARY_DRIVE_SELECT_PORT;
 
     select_drive(drive_info->is_secondary, drive_info->is_slave);
 
     for (uint32_t i = 0; i < sector_count; i++) {
-        outb(command_port, 0x20); // READ SECTOR(S) command
+        write_command(command_port, 0x20, lba, sector_count);
 
-        outb(drive_select_port, 0xA0 | ((lba >> 24) & 0x0F));
-        outb(command_port, lba & 0xFF);
-        outb(command_port, (lba >> 8) & 0xFF);
-        outb(command_port, (lba >> 16) & 0xFF);
+        wait_for_ready(drive_info->is_secondary);
 
-        wait_for_ready();
-
-        insw(data_port, buffer, sector_size / 2);
-        buffer = (uint8_t *)buffer + sector_size;
+        insw(data_port, buffer, drive_info->sector_size / 2);
+        buffer = (uint8_t *)buffer + drive_info->sector_size;
         lba++;
     }
 }
@@ -251,88 +243,139 @@ void write_sector_lba28(uint32_t lba, const void *buffer, uint32_t buffer_size, 
         return;
     }
 
-    uint32_t sector_size = drive_info->sector_size;
-    uint32_t sector_count = buffer_size / sector_size;
+    uint32_t sector_count = buffer_size / drive_info->sector_size;
     uint16_t command_port = drive_info->is_secondary ? ATA_SECONDARY_COMMAND_PORT : ATA_PRIMARY_COMMAND_PORT;
     uint16_t data_port = drive_info->is_secondary ? ATA_SECONDARY_DATA_PORT : ATA_PRIMARY_DATA_PORT;
-    uint16_t drive_select_port = drive_info->is_secondary ? ATA_SECONDARY_DRIVE_SELECT_PORT : ATA_PRIMARY_DRIVE_SELECT_PORT;
 
     select_drive(drive_info->is_secondary, drive_info->is_slave);
 
     for (uint32_t i = 0; i < sector_count; i++) {
-        outb(command_port, 0x30); // WRITE SECTOR(S) command
+        write_command(command_port, 0x30, lba, sector_count);
 
-        outb(drive_select_port, 0xA0 | ((lba >> 24) & 0x0F));
-        outb(command_port, lba & 0xFF);
-        outb(command_port, (lba >> 8) & 0xFF);
-        outb(command_port, (lba >> 16) & 0xFF);
+        wait_for_ready(drive_info->is_secondary);
 
-        wait_for_ready();
-
-        outsw(data_port, buffer, sector_size / 2);
-        buffer = (const uint8_t *)buffer + sector_size;
+        outsw(data_port, buffer, drive_info->sector_size / 2);
+        buffer = (const uint8_t *)buffer + drive_info->sector_size;
         lba++;
     }
 }
 
-void read_sector(uint32_t sector, void *buffer, uint32_t buffer_size, struct DriveInfo *drive_info) {
-    if (drive_info == NULL || buffer == NULL) {
-        dbg_printf("[%d] Invalid drive_info or buffer.\n", ticks);
+void read_sector_chs(uint16_t cylinder, uint8_t head, uint8_t sector, void *buffer, uint32_t buffer_size, struct DriveInfo *drive_info) {
+    if (buffer == NULL || buffer_size == 0 || buffer_size % drive_info->sector_size != 0) {
+        dbg_printf("[%d] Invalid buffer or buffer size.\n", ticks);
         return;
     }
 
-    // Select the drive based on drive_info
+    uint32_t sector_count = buffer_size / drive_info->sector_size;
+    uint16_t command_port = drive_info->is_secondary ? ATA_SECONDARY_COMMAND_PORT : ATA_PRIMARY_COMMAND_PORT;
+    uint16_t data_port = drive_info->is_secondary ? ATA_SECONDARY_DATA_PORT : ATA_PRIMARY_DATA_PORT;
+
     select_drive(drive_info->is_secondary, drive_info->is_slave);
 
+    for (uint32_t i = 0; i < sector_count; i++) {
+        // Write the head and drive number
+        outb(command_port + 6, 0xA0 | (drive_info->is_slave << 4) | head);
+
+        // Write the cylinder number
+        outb(command_port + 2, (uint8_t)(cylinder >> 8));
+        outb(command_port + 3, (uint8_t)(cylinder & 0xFF));
+
+        // Write the sector number
+        outb(command_port + 4, sector);
+
+        // Write the sector count
+        outb(command_port + 5, sector_count);
+
+        // Write the command
+        outb(command_port + 7, 0x21); // Read sectors command
+
+        wait_for_ready(drive_info->is_secondary);
+
+        insw(data_port, buffer, drive_info->sector_size / 2);
+        buffer = (uint8_t *)buffer + drive_info->sector_size;
+    }
+}
+
+void write_sector_chs(uint16_t cylinder, uint8_t head, uint8_t sector, const void *buffer, uint32_t buffer_size, struct DriveInfo *drive_info) {
+    if (buffer == NULL || buffer_size == 0 || buffer_size % drive_info->sector_size != 0) {
+        dbg_printf("[%d] Invalid buffer or buffer size.\n", ticks);
+        return;
+    }
+
+    uint32_t sector_count = buffer_size / drive_info->sector_size;
+    uint16_t command_port = drive_info->is_secondary ? ATA_SECONDARY_COMMAND_PORT : ATA_PRIMARY_COMMAND_PORT;
+    uint16_t data_port = drive_info->is_secondary ? ATA_SECONDARY_DATA_PORT : ATA_PRIMARY_DATA_PORT;
+
+    select_drive(drive_info->is_secondary, drive_info->is_slave);
+
+    for (uint32_t i = 0; i < sector_count; i++) {
+        // Write the head and drive number
+        outb(command_port + 6, 0xA0 | (drive_info->is_slave << 4) | head);
+
+        // Write the cylinder number
+        outb(command_port + 2, (uint8_t)(cylinder >> 8));
+        outb(command_port + 3, (uint8_t)(cylinder & 0xFF));
+
+        // Write the sector number
+        outb(command_port + 4, sector);
+
+        // Write the sector count
+        outb(command_port + 5, sector_count);
+
+        // Write the command
+        outb(command_port + 7, 0x31); // Write sectors command
+
+        wait_for_ready(drive_info->is_secondary);
+
+        outsw(data_port, buffer, drive_info->sector_size / 2);
+        buffer = (const uint8_t *)buffer + drive_info->sector_size;
+    }
+}
+
+void read_sector(uint32_t sector, void *buffer, uint32_t buffer_size, struct DriveInfo *drive_info) {
     if (drive_info->lba_48) {
-        read_sector_lba48(sector, buffer, buffer_size, drive_info);
+        // Convert 32-bit sector to 48-bit LBA
+        uint64_t lba_48 = (uint64_t)sector;
+        read_sector_lba48(lba_48, buffer, buffer_size, drive_info);
     } else if (drive_info->lba_28) {
         read_sector_lba28(sector, buffer, buffer_size, drive_info);
     } else if (drive_info->chs) {
-        return;
+        uint16_t cylinder = (sector / (drive_info->heads_per_cylinder * drive_info->sectors_per_track)) & 0xFFFF;
+        uint8_t head = (sector / drive_info->sectors_per_track) % drive_info->heads_per_cylinder;
+        uint8_t sector_num = (sector % drive_info->sectors_per_track) + 1;
+        read_sector_chs(cylinder, head, sector_num, buffer, buffer_size, drive_info);
     } else {
-        dbg_printf("Unsupported addressing mode.\n");
+        dbg_printf("[%d] Unsupported addressing mode.\n", ticks);
     }
 }
 
 void write_sector(uint32_t sector, const void *buffer, uint32_t buffer_size, struct DriveInfo *drive_info) {
-    if (drive_info == NULL || buffer == NULL) {
-        dbg_printf("[%d] Invalid drive_info or buffer.\n", ticks);
-        return;
-    }
-
-    // Select the drive based on drive_info
-    select_drive(drive_info->is_secondary, drive_info->is_slave);
-
     if (drive_info->lba_48) {
-        write_sector_lba48(sector, buffer, buffer_size, drive_info);
+        // Convert 32-bit sector to 48-bit LBA
+        uint64_t lba_48 = (uint64_t)sector;
+        write_sector_lba48(lba_48, buffer, buffer_size, drive_info);
     } else if (drive_info->lba_28) {
         write_sector_lba28(sector, buffer, buffer_size, drive_info);
     } else if (drive_info->chs) {
-        return;
+        uint16_t cylinder = (sector / (drive_info->heads_per_cylinder * drive_info->sectors_per_track)) & 0xFFFF;
+        uint8_t head = (sector / drive_info->sectors_per_track) % drive_info->heads_per_cylinder;
+        uint8_t sector_num = (sector % drive_info->sectors_per_track) + 1;
+        write_sector_chs(cylinder, head, sector_num, buffer, buffer_size, drive_info);
     } else {
         dbg_printf("[%d] Unsupported addressing mode.\n", ticks);
     }
 }
 
 void print_drive_info(struct DriveInfo *drive_info) {
-    if (!drive_info->detected) {
-        printf("Drive not detected.\n");
-        return;
-    }
-
-    printf("Drive Model: %s\n", drive_info->model);
-    printf("Drive Type: %s\n", drive_info->is_sata ? "SATA" : "PATA");
-    printf("Drive is %s\n", drive_info->is_slave ? "Slave" : "Master");
-    printf("Drive is on %s\n", drive_info->is_secondary ? "Secondary Channel" : "Primary Channel");
-    printf("Drive uses %s\n", drive_info->wire_80_cable ? "80-wire cable" : "40-wire cable");
-    printf("Sector Size: %u\n", drive_info->sector_size);
-    printf("Supports CHS: %s\n", drive_info->chs ? "Yes" : "No");
-    printf("Supports LBA28: %s\n", drive_info->lba_28 ? "Yes" : "No");
-    printf("Supports LBA48: %s\n", drive_info->lba_48 ? "Yes" : "No");
-    printf("LBA28 Sector Count: %u\n", drive_info->number_lba_28_sectors);
-    printf("LBA48 Sector Count: %llu\n", drive_info->number_lba_48_sectors);
-    printf("Sectors per Track: %u\n", drive_info->sectors_per_track);
-    printf("Heads per Cylinder: %u\n", drive_info->heads_per_cylinder);
-    printf("Supported UDMA Modes: 0x%X\n", drive_info->supported_udma_modes);
+    dbg_printf("[%d] Detected: %s\n", ticks, drive_info->detected ? "Yes" : "No");
+    dbg_printf("[%d] Model: %s\n", ticks, drive_info->model);
+    dbg_printf("[%d] LBA28: %s\n", ticks, drive_info->lba_28 ? "Yes" : "No");
+    dbg_printf("[%d] LBA48: %s\n", ticks, drive_info->lba_48 ? "Yes" : "No");
+    dbg_printf("[%d] CHS: %s\n", ticks, drive_info->chs ? "Yes" : "No");
+    dbg_printf("[%d] Number of LBA28 sectors: %u\n", ticks, drive_info->number_lba_28_sectors);
+    dbg_printf("[%d] Number of LBA48 sectors: %llu\n", ticks, drive_info->number_lba_48_sectors);
+    dbg_printf("[%d] Sector size: %u\n", ticks, drive_info->sector_size);
+    dbg_printf("[%d] Supported UDMA modes: %02X\n", ticks, drive_info->supported_udma_modes);
+    dbg_printf("[%d] Active UDMA mode: %02X\n", ticks, drive_info->supported_udma_modes);
+    dbg_printf("[%d] 80-wire cable: %s\n", ticks, drive_info->wire_80_cable ? "Yes" : "No");
 }
