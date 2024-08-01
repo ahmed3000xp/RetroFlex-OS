@@ -118,6 +118,11 @@ struct header_2 {
     uint32_t pc_card_legacy_mode_base_addr;
 }__attribute__((packed));
 
+struct PCIDeviceInfo{
+    
+}__attribute__((packed));;
+
+
 static uint16_t vendorID = 0;
 static uint8_t headerType = 0;
 

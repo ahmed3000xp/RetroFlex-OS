@@ -321,18 +321,18 @@ void print_drive_info(struct DriveInfo *drive_info) {
         return;
     }
 
-    dbg_printf("Drive Model: %s\n", drive_info->model);
-    dbg_printf("Drive Type: %s\n", drive_info->is_sata ? "SATA" : "PATA");
-    dbg_printf("Drive is %s\n", drive_info->is_slave ? "Slave" : "Master");
-    dbg_printf("Drive is on %s\n", drive_info->is_secondary ? "Secondary Channel" : "Primary Channel");
-    dbg_printf("Drive uses %s\n", drive_info->wire_80_cable ? "80-wire cable" : "40-wire cable");
-    dbg_printf("Sector Size: %u\n", drive_info->sector_size);
-    dbg_printf("Supports CHS: %s\n", drive_info->chs ? "Yes" : "No");
-    dbg_printf("Supports LBA28: %s\n", drive_info->lba_28 ? "Yes" : "No");
-    dbg_printf("Supports LBA48: %s\n", drive_info->lba_48 ? "Yes" : "No");
-    dbg_printf("LBA28 Sector Count: %u\n", drive_info->number_lba_28_sectors);
-    dbg_printf("LBA48 Sector Count: %llu\n", drive_info->number_lba_48_sectors);
-    dbg_printf("Sectors per Track: %u\n", drive_info->sectors_per_track);
-    dbg_printf("Heads per Cylinder: %u\n", drive_info->heads_per_cylinder);
-    dbg_printf("Supported UDMA Modes: 0x%X\n", drive_info->supported_udma_modes);
+    printf("Drive Model: %s\n", drive_info->model);
+    printf("Drive Type: %s\n", drive_info->is_sata ? "SATA" : "PATA");
+    printf("Drive is %s\n", drive_info->is_slave ? "Slave" : "Master");
+    printf("Drive is on %s\n", drive_info->is_secondary ? "Secondary Channel" : "Primary Channel");
+    printf("Drive uses %s\n", drive_info->wire_80_cable ? "80-wire cable" : "40-wire cable");
+    printf("Sector Size: %u\n", drive_info->sector_size);
+    printf("Supports CHS: %s\n", drive_info->chs ? "Yes" : "No");
+    printf("Supports LBA28: %s\n", drive_info->lba_28 ? "Yes" : "No");
+    printf("Supports LBA48: %s\n", drive_info->lba_48 ? "Yes" : "No");
+    printf("LBA28 Sector Count: %u\n", drive_info->number_lba_28_sectors);
+    printf("LBA48 Sector Count: %llu\n", drive_info->number_lba_48_sectors);
+    printf("Sectors per Track: %u\n", drive_info->sectors_per_track);
+    printf("Heads per Cylinder: %u\n", drive_info->heads_per_cylinder);
+    printf("Supported UDMA Modes: 0x%X\n", drive_info->supported_udma_modes);
 }
