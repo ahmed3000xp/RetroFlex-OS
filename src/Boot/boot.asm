@@ -26,9 +26,9 @@ extern main
 start:
     cli ; Disable interrupts
     mov esp, stack_space ; Setup the Stack
-    push ebx ; Push pointer to Multiboot header
-    push eax ; Push Magic Number
-    call main ; Start the kernel         
+    push ebx ; pointer to the Multiboot header
+    push eax ; Magic Number
+    call main ; call the kernel         
 halt_kernel:
     cli
     hlt

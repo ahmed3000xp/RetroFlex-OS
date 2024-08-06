@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#pragma once
+
 #include "../../Headers/stdint.h"
 #include "../../Headers/util.h"
 #include "../Speaker/speaker.h"
@@ -137,22 +139,6 @@ static const char keymap[256] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
-
-static bool shift_pressed = false;
-static bool ctrl_pressed = false;
-static bool alt_pressed = false;
-static bool extended_key_sequence_1 = false; // Flags to track extended key sequence
-static bool extended_key_sequence_2 = false; 
-
-static bool numlock = false;
-static bool scroll_lock = false;
-static bool capslock = false;
-
-static bool key_released = false;
-static bool new_key_press = false;
-
-static uint8_t key = 0;
-static uint8_t leds_state = 0;
 
 // Function prototypes
 void ps2_init();

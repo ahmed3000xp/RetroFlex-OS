@@ -129,15 +129,17 @@ void disable_cursor() {
     outb(0x3D5, 0x20);
 }
 
-void update_cursor(int x, int y) {
-    uint16_t pos = y * width + x;
+void update_cursor(uint32_t x, uint32_t y) {
+    uint32_t pos = y * width + x;
 
+    // Output low byte of pos
     outb(0x3D4, 0x0F);
     outb(0x3D5, (uint8_t) (pos & 0xFF));
+
+    // Output high byte of pos
     outb(0x3D4, 0x0E);
     outb(0x3D5, (uint8_t) ((pos >> 8) & 0xFF));
 }
-
 uint16_t get_cursor_position(void) {
     uint16_t pos = 0;
     outb(0x3D4, 0x0F);
@@ -150,8 +152,8 @@ uint16_t get_cursor_position(void) {
 void clear_screen() {
     if(current_mode == 0x3){
         uint16_t blank = ' ' | (current_color << 8); 
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
+        for (uint32_t y = 0; y < height; y++) {
+            for (uint32_t x = 0; x < width; x++) {
                 text_memory[x + y * width] = blank;
             }
         }
@@ -160,8 +162,8 @@ void clear_screen() {
         update_cursor(cursor_x, cursor_y);
     }
     if(current_mode == 0x13){
-        for(int y = 0; y < 200; y++){
-            for(int x = 0; x < 320; x++){
+        for(uint32_t y = 0; y < width; y++){
+            for(uint32_t x = 0; x < height; x++){
                 vga_memory[x + y * width] = 0;
             }
         }
@@ -169,14 +171,14 @@ void clear_screen() {
 }
 
 void scroll_up() {
-    for (int row = 1; row < height; ++row) {
-        for (int col = 0; col < width; ++col) {
+    for (uint32_t row = 1; row < height; ++row) {
+        for (uint32_t col = 0; col < width; ++col) {
             text_memory[col + (row - 1) * width] = text_memory[col + row * width];
         }
     }
 
     uint16_t blank = ' ' | (current_color << 8);
-    for (int col = 0; col < width; ++col) {
+    for (uint32_t col = 0; col < width; ++col) {
         text_memory[col + (height - 1) * width] = blank;
     }
 }
@@ -212,7 +214,7 @@ void putc(char c) {
             }
             break;
         default:
-            text_memory[cursor_x + cursor_y * width] = c | (current_color << 8);
+            text_memory[cursor_x + cursor_y * width] = (uint8_t)c | (current_color << 8);
             cursor_x++;
             if (cursor_x >= width) {
                 cursor_x = 0;
@@ -244,8 +246,8 @@ void printf_unsigned(unsigned long long number, int radix)
     // convert number to ASCII
     do 
     {
-        unsigned long long rem = number % radix;
-        number /= radix;
+        unsigned long long rem = number % (unsigned long long)radix;
+        number /= (unsigned long long)radix;
         buffer[pos++] = g_HexChars[rem];
     } while (number > 0);
 
@@ -259,9 +261,9 @@ void printf_signed(long long number, int radix)
     if (number < 0)
     {
         putc('-');
-        printf_unsigned(-number, radix);
+        printf_unsigned((long long unsigned)-number, radix);
     }
-    else printf_unsigned(number, radix);
+    else printf_unsigned((long long unsigned)number, radix);
 }
 
 #define PRINTF_STATE_NORMAL         0
@@ -448,7 +450,7 @@ void dbg_putc(char c){
             outb(0xe9, '\b');
             break;
         default:
-            outb(0xe9, c);
+            outb(0xe9, (uint8_t)c);
             break;
     }
 }
@@ -468,8 +470,8 @@ void dbg_printf_unsigned(unsigned long long number, int radix)
     // convert number to ASCII
     do 
     {
-        unsigned long long rem = number % radix;
-        number /= radix;
+        unsigned long long rem = number % (unsigned long long)radix;
+        number /= (unsigned long long)radix;
         buffer[pos++] = g_HexChars[rem];
     } while (number > 0);
 
@@ -483,9 +485,9 @@ void dbg_printf_signed(long long number, int radix)
     if (number < 0)
     {
         dbg_putc('-');
-        dbg_printf_unsigned(-number, radix);
+        dbg_printf_unsigned((unsigned long long)-number, radix);
     }
-    else dbg_printf_unsigned(number, radix);
+    else dbg_printf_unsigned((unsigned long long)number, radix);
 }
 
 void dbg_printf(const char* fmt, ...)

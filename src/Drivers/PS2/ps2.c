@@ -15,6 +15,21 @@
 
 #include "ps2.h"
 
+static bool shift_pressed = false;
+static bool ctrl_pressed = false;
+static bool alt_pressed = false;
+static bool extended_key_sequence_1 = false; // Flags to track extended key sequence
+static bool extended_key_sequence_2 = false; 
+
+static bool numlock = false;
+static bool scroll_lock = false;
+static bool capslock = false;
+
+static bool key_released = false;
+static bool new_key_press = false;
+
+static uint8_t key = 0;
+
 // PS/2 initialization
 void ps2_init() {
     // Disable interrupts
@@ -51,6 +66,7 @@ void ps2_wait_output() {
 
 // Keyboard interrupt handler
 void keyboard_irq_handler(struct InterruptRegisters *r) {
+    (void)r;
     uint8_t scan_code = ps2_read_data();
     process_scan_code(scan_code);
 }
@@ -162,7 +178,7 @@ void process_scan_code(uint8_t scan_code) {
                 case 0x38: alt_pressed = true; break;   // Alt
                 default:
                     if (keymap[scan_code]) {
-                        key = keymap[scan_code];
+                        key = (uint8_t)keymap[scan_code];
                         new_key_press = true; // Set new key press flag
 
                         switch (key) {

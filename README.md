@@ -11,19 +11,19 @@ If you are using Windows, you'll need to install WSL (Windows Subsystem for Linu
 ### For Debian/Ubuntu/Ubuntu-based Systems:
 Run the following command:
 
-sudo apt install xorriso grub-common qemu-system-x86 nasm gcc make -y
+sudo apt install grub-common qemu-system nasm gcc make parted dosfstools
 
 ### For Fedora Systems:
 
 Run the following command:
 
-sudo dnf install -y xorriso nasm qemu grub2 virt-manager virt-viewer dnsmasq vde2 bridge-utils nmap-ncat @development-tools bison flex gmp-devel libmpc-devel mpfr-devel texinfo gcc make
+sudo dnf install nasm qemu grub2 virt-manager virt-viewer dnsmasq vde2 bridge-utils nmap-ncat @development-tools bison flex gmp-devel libmpc-devel mpfr-devel texinfo gcc make parted dosfstools
 
 ### For Arch/Arch-Based Systems:
 
 Run the following command:
 
-sudo pacman -S --noconfirm xorriso nasm qemu grub virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat base-devel bison flex gmp libmpc mpfr texinfo gcc make
+sudo pacman -Syy nasm grub virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat base-devel bison flex gmp libmpc mpfr texinfo gcc make qemu-full parted dosfstools
 
 Yeah, I use Arch, btw.
 
@@ -39,9 +39,7 @@ If you encounter a permissions error during ISO creation, such as:
 
 rm: remove write-protected regular file '../disk.img'?
 ...
-libburn : SORRY : Failed to open device (a pseudo-drive) : Permission denied
-...
-qemu-system-x86_64: Could not open '../disk.img': Permission denied
+qemu-system: Could not open '../disk.img': Permission denied
 
 Try running the script with elevated privileges using sudo:
 

@@ -21,9 +21,13 @@
 extern void test_ints();
 
 void main(uint32_t magic, struct multiboot_info* mb_info) {
-    uint8_t kc = 0;
     struct DriveInfo drive_info;
     char buffer[512];
+
+    (void)magic; (void)mb_info;
+
+    clear_screen();
+    dbg_puts("\033[2J\033[H");
 
     printf("RetroFlex OS  Copyright (C) 2024 Ahmed\n");
     printf("This program comes with ABSOLUTELY NO WARRANTY; for details type 'show w'\n");
@@ -68,11 +72,11 @@ void main(uint32_t magic, struct multiboot_info* mb_info) {
 	    dbg_printf("[%d] Didn't Find ATA controller\n", ticks);
 
     identify_drive(&drive_info, false, false);
-    read_sector(0, buffer, 512, &drive_info);
+    read_sector_chs(0, 0, 1, buffer, 512, &drive_info);
     print_drive_info(&drive_info);
     for(int i = 0; i < 512; i++){
-        printf("%x ", buffer[i]);
+        printf("%x ", (char)buffer[i]);
     }
-    
+    putc('\n');
     return;
 }

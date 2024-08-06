@@ -20,7 +20,7 @@ volatile uint32_t frequency = 0;
 
 void init_PIT(uint32_t freq) {
     frequency = freq;
-    uint32_t divisor = __udivdi3(PIT_FREQUENCY, freq);
+    unsigned long long divisor = __udivdi3(PIT_FREQUENCY, freq);
 
     outb(PIT_COMMAND, PIT_CMD_BINARY | PIT_CMD_MODE3);
 
@@ -29,6 +29,7 @@ void init_PIT(uint32_t freq) {
 }
 
 void PIT_irq_handler(struct InterruptRegisters *r) {
+    (void)r;
     ticks++;
 }
 

@@ -57,7 +57,7 @@ void set_GDT_gate(uint32_t num, uint32_t base, uint32_t limit, uint8_t access, u
 
     GDT_entries[num].base_low = (base & 0xFFFF);
     GDT_entries[num].base_middle = (base >> 16) & 0xFF;
-    GDT_entries[num].base_high = (base >> 24) & 0xFF;
+    GDT_entries[num].base_high = (uint8_t)(base >> 24) & 0xFF;
 
     GDT_entries[num].limit = (limit & 0xFFFF);
     GDT_entries[num].flags = (limit >> 16) & 0x0F;

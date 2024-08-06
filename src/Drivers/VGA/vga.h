@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#pragma once
+
 #include "../../Headers/stdint.h"
 #include "../../Headers/util.h"
 
@@ -30,7 +32,7 @@ void set_palette(uint8_t index, uint8_t r, uint8_t g, uint8_t b);
 bool set_gpu_mode(uint8_t mode);
 void enable_cursor(uint8_t cursor_start, uint8_t cursor_end);
 void disable_cursor();
-void update_cursor(int x, int y);
+void update_cursor(uint32_t x, uint32_t y);
 uint16_t get_cursor_position(void);
 void clear_screen();
 void scroll_up();

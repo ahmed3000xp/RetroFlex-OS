@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#pragma once
+
 #include "../../Headers/stdint.h"
 #include "../../Headers/util.h"
 
@@ -117,9 +119,6 @@ struct header_2 {
     uint16_t subsystem_vendor_id;
     uint32_t pc_card_legacy_mode_base_addr;
 }__attribute__((packed));
-
-static uint16_t vendorID = 0;
-static uint8_t headerType = 0;
 
 // Function prototypes
 uint32_t pciConfigReadDWord(uint8_t bus, uint8_t slot, uint8_t func, uint8_t offset);

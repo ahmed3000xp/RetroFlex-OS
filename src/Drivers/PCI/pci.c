@@ -15,6 +15,9 @@
 
 #include "pci.h"
 
+static uint16_t vendorID = 0;
+static uint8_t headerType = 0;
+
 void checkBus(uint8_t bus);
 
 // Function to read a 32-bit Double word from a PCI configuration space
@@ -84,15 +87,17 @@ void pciConfigWriteDword(uint8_t bus, uint8_t slot, uint8_t func, uint8_t offset
 
 // Function to check the Vendor ID of a PCI device
 uint16_t pciCheckVendor(uint8_t bus, uint8_t slot) {
-    uint16_t vendor, device;
+    uint16_t vendor;
 
     // Read the vendor ID from the first configuration register
     vendor = pciConfigReadWord(bus, slot, 0, 0);
-    
+
     // Check if the vendor ID indicates a non-existent device
     if (vendor != 0xFFFF) {
         // Read the device ID (just as an example, not used in this function)
-        device = pciConfigReadWord(bus, slot, 0, 2);
+        uint16_t device = pciConfigReadWord(bus, slot, 0, 2);
+        // Use the device variable if needed in future
+        (void)device; // Prevent unused variable warning
     }
 
     // Return the vendor ID (or some other meaningful value based on your needs)
@@ -142,6 +147,8 @@ void* readPCIConfig(uint8_t bus, uint8_t slot, uint8_t func) {
     if (headerType == 0x00) {
         struct header_0* h0;
         
+        memset(&h0, 0, sizeof(struct header_0));
+
         h0->vendor_id = pciConfigReadWord(bus, slot, func, 0x00);
         h0->device_id = pciConfigReadWord(bus, slot, func, 0x02);
         h0->command = pciConfigReadWord(bus, slot, func, 0x04);
@@ -173,6 +180,8 @@ void* readPCIConfig(uint8_t bus, uint8_t slot, uint8_t func) {
         
     } else if (headerType == 0x01) {
         struct header_1* h1;
+
+        memset(&h1, 0, sizeof(struct header_1));
         
         h1->vendor_id = pciConfigReadWord(bus, slot, func, 0x00);
         h1->device_id = pciConfigReadWord(bus, slot, func, 0x02);
@@ -215,6 +224,8 @@ void* readPCIConfig(uint8_t bus, uint8_t slot, uint8_t func) {
         
     } else if (headerType == 0x02) {
         struct header_2* h2;
+
+        memset(&h2, 0, sizeof(struct header_2));
         
         h2->vendor_id = pciConfigReadWord(bus, slot, func, 0x00);
         h2->device_id = pciConfigReadWord(bus, slot, func, 0x02);

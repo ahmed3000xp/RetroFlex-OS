@@ -108,14 +108,14 @@ void init_IDT(){
 void set_IDT_gate(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags){
 
     IDT_entries[num].base_low = base & 0xFFFF;
-    IDT_entries[num].base_high = (base >> 16) & 0xFFFF;
+    IDT_entries[num].base_high = (uint16_t)(base >> 16) & 0xFFFF;
     IDT_entries[num].sel = sel;
     IDT_entries[num].always0 = 0;
     IDT_entries[num].flags = flags | 0x60;
 
 }
 
-unsigned char* exception_messages[] = {
+const char* exception_messages[] = {
     "Division By Zero",
     "Debug",
     "Non Maskable Interrupt",
@@ -169,7 +169,7 @@ void isr_handler(struct InterruptRegisters* regs){
             case 128:
                 switch(regs->eax){
                     case 0:
-                        putc((uint8_t)regs->ebx);
+                        putc((int8_t)regs->ebx);
                         break;
                     case 1:
                         puts((const char *)regs->esi);
@@ -184,10 +184,7 @@ void isr_handler(struct InterruptRegisters* regs){
     }
 }
 
-void *irq_routines[16] = {
-    0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0
-};
+void (*irq_routines[16])(struct InterruptRegisters *r) = { 0 };
 
 void irq_install_handler (int irq, void (*handler)(struct InterruptRegisters *r)){
     irq_routines[irq] = handler;

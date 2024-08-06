@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#pragma once
+
 #include "../../Headers/stdint.h"
 #include "../../Headers/util.h"
 #include "../VGA/vga.h"
@@ -39,18 +41,6 @@ struct DriveInfo {
     uint32_t sectors_per_track; 
     uint32_t heads_per_cylinder;
 }__attribute__((packed));
-
-// ATA ports and commands for primary controller
-static uint16_t ATA_PRIMARY_COMMAND_PORT = 0x1F7;
-static uint16_t ATA_PRIMARY_CONTROL_PORT = 0x3F6;
-static uint16_t ATA_PRIMARY_DATA_PORT = 0x1F0;
-static uint16_t ATA_PRIMARY_DRIVE_SELECT_PORT = 0x1F6;
-
-// ATA ports and commands for secondary controller
-static uint16_t ATA_SECONDARY_COMMAND_PORT = 0x177;
-static uint16_t ATA_SECONDARY_CONTROL_PORT = 0x376;
-static uint16_t ATA_SECONDARY_DATA_PORT = 0x170;
-static uint16_t ATA_SECONDARY_DRIVE_SELECT_PORT = 0x176;
 
 #define ATA_IDENTIFY_COMMAND 0xEC
 #define SECTOR_SIZE 512

@@ -13,7 +13,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include <stdint.h>
+#pragma once
+
+#include "../../Headers/stdint.h"
 #include "../../Headers/util.h"
 #include "../../IDT/idt.h"
 

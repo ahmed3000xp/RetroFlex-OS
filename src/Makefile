@@ -20,7 +20,7 @@ BUILD_DIR=../build
 QFLAGS=-debugcon stdio
 QNFLAGS=-enable-kvm -cpu host -debugcon stdio
 
-CFLAGS=-m32 -Werror -ffreestanding -fno-stack-protector -c
+CFLAGS=-m32 -Wall -Wextra -Werror -Wpedantic -ffreestanding -fno-stack-protector -c
 ASMFLAGS=-f elf
 LDFLAGS=-m elf_i386 -T linker.ld
 

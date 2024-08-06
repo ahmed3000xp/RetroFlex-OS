@@ -15,6 +15,18 @@
 
 #include "ata.h"
 
+// ATA ports and commands for primary controller
+static uint16_t ATA_PRIMARY_COMMAND_PORT = 0x1F7;
+static uint16_t ATA_PRIMARY_CONTROL_PORT = 0x3F6;
+static uint16_t ATA_PRIMARY_DATA_PORT = 0x1F0;
+static uint16_t ATA_PRIMARY_DRIVE_SELECT_PORT = 0x1F6;
+
+// ATA ports and commands for secondary controller
+static uint16_t ATA_SECONDARY_COMMAND_PORT = 0x177;
+static uint16_t ATA_SECONDARY_CONTROL_PORT = 0x376;
+static uint16_t ATA_SECONDARY_DATA_PORT = 0x170;
+static uint16_t ATA_SECONDARY_DRIVE_SELECT_PORT = 0x176;
+
 void select_drive(bool is_secondary, bool is_slave) {
     uint16_t drive_select_port = is_secondary ? ATA_SECONDARY_DRIVE_SELECT_PORT : ATA_PRIMARY_DRIVE_SELECT_PORT;
     uint8_t drive_select_value = is_slave ? 0xB0 : 0xA0;
@@ -27,6 +39,9 @@ void wait_for_ready(bool is_secondary) {
 }
 
 void identify_drive(struct DriveInfo *drive_info, bool is_slave, bool is_secondary) {
+    (void)ATA_PRIMARY_CONTROL_PORT;
+    (void)ATA_SECONDARY_CONTROL_PORT;
+    
     memset(drive_info, 0, sizeof(struct DriveInfo));
 
     uint16_t identify_data[256] = {0};
@@ -54,7 +69,7 @@ void identify_drive(struct DriveInfo *drive_info, bool is_slave, bool is_seconda
     // Extract model number
     for (int i = 0; i < 20; ++i) {
         drive_info->model[i * 2] = identify_data[27 + i] >> 8;
-        drive_info->model[i * 2 + 1] = identify_data[27 + i] & 0xFF;
+        drive_info->model[i * 2 + 1] = (identify_data[27 + i] & 0xFF);
     }
     drive_info->model[40] = '\0';
 
@@ -65,7 +80,7 @@ void identify_drive(struct DriveInfo *drive_info, bool is_slave, bool is_seconda
     drive_info->supported_udma_modes = identify_data[88] & 0xFF;
 
     // Check for active UDMA mode
-    uint8_t active_udma_mode = (identify_data[88] >> 8) & 0xFF;
+    uint8_t active_udma_mode = (uint8_t)(identify_data[88] >> 8) & 0xFF;
     drive_info->supported_udma_modes |= active_udma_mode << 8;
 
     // Check for 80 conductor cable
@@ -91,7 +106,7 @@ void identify_drive(struct DriveInfo *drive_info, bool is_slave, bool is_seconda
         drive_info->chs = true; // CHS
     }
 
-    drive_info->sector_size = SECTOR_SIZE; // Default sector size
+    drive_info->sector_size = identify_data[106]; // Default sector size
 
     // Set drive type
     drive_info->drive_type = identify_data[0];
@@ -284,7 +299,7 @@ void read_sector_chs(uint16_t cylinder, uint8_t head, uint8_t sector, void *buff
         outb(command_port + 4, sector);
 
         // Write the sector count
-        outb(command_port + 5, sector_count);
+        outb(command_port + 5, (uint8_t)sector_count);
 
         // Write the command
         outb(command_port + 7, 0x21); // Read sectors command
@@ -320,7 +335,7 @@ void write_sector_chs(uint16_t cylinder, uint8_t head, uint8_t sector, const voi
         outb(command_port + 4, sector);
 
         // Write the sector count
-        outb(command_port + 5, sector_count);
+        outb(command_port + 5, (uint8_t)sector_count);
 
         // Write the command
         outb(command_port + 7, 0x31); // Write sectors command
@@ -334,15 +349,14 @@ void write_sector_chs(uint16_t cylinder, uint8_t head, uint8_t sector, const voi
 
 void read_sector(uint32_t sector, void *buffer, uint32_t buffer_size, struct DriveInfo *drive_info) {
     if (drive_info->lba_48) {
-        // Convert 32-bit sector to 48-bit LBA
         uint64_t lba_48 = (uint64_t)sector;
         read_sector_lba48(lba_48, buffer, buffer_size, drive_info);
     } else if (drive_info->lba_28) {
         read_sector_lba28(sector, buffer, buffer_size, drive_info);
     } else if (drive_info->chs) {
-        uint16_t cylinder = (sector / (drive_info->heads_per_cylinder * drive_info->sectors_per_track)) & 0xFFFF;
-        uint8_t head = (sector / drive_info->sectors_per_track) % drive_info->heads_per_cylinder;
-        uint8_t sector_num = (sector % drive_info->sectors_per_track) + 1;
+        uint16_t cylinder = (uint16_t)(sector / (drive_info->heads_per_cylinder * drive_info->sectors_per_track));
+        uint8_t head = (uint8_t)((sector / drive_info->sectors_per_track) % drive_info->heads_per_cylinder);
+        uint8_t sector_num = (uint8_t)(((sector % drive_info->sectors_per_track) + 1) & 0xFF);
         read_sector_chs(cylinder, head, sector_num, buffer, buffer_size, drive_info);
     } else {
         dbg_printf("[%d] Unsupported addressing mode.\n", ticks);
@@ -351,15 +365,14 @@ void read_sector(uint32_t sector, void *buffer, uint32_t buffer_size, struct Dri
 
 void write_sector(uint32_t sector, const void *buffer, uint32_t buffer_size, struct DriveInfo *drive_info) {
     if (drive_info->lba_48) {
-        // Convert 32-bit sector to 48-bit LBA
         uint64_t lba_48 = (uint64_t)sector;
         write_sector_lba48(lba_48, buffer, buffer_size, drive_info);
     } else if (drive_info->lba_28) {
         write_sector_lba28(sector, buffer, buffer_size, drive_info);
     } else if (drive_info->chs) {
-        uint16_t cylinder = (sector / (drive_info->heads_per_cylinder * drive_info->sectors_per_track)) & 0xFFFF;
-        uint8_t head = (sector / drive_info->sectors_per_track) % drive_info->heads_per_cylinder;
-        uint8_t sector_num = (sector % drive_info->sectors_per_track) + 1;
+        uint16_t cylinder = (uint16_t)(sector / (drive_info->heads_per_cylinder * drive_info->sectors_per_track));
+        uint8_t head = (uint8_t)((sector / drive_info->sectors_per_track) % drive_info->heads_per_cylinder);
+        uint8_t sector_num = (uint8_t)(((sector % drive_info->sectors_per_track) + 1) & 0xFF);
         write_sector_chs(cylinder, head, sector_num, buffer, buffer_size, drive_info);
     } else {
         dbg_printf("[%d] Unsupported addressing mode.\n", ticks);
