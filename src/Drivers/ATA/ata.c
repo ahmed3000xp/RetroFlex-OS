@@ -39,8 +39,7 @@ void wait_for_ready(bool is_secondary) {
 }
 
 void identify_drive(struct DriveInfo *drive_info, bool is_slave, bool is_secondary) {
-    (void)ATA_PRIMARY_CONTROL_PORT;
-    (void)ATA_SECONDARY_CONTROL_PORT;
+    (void)ATA_PRIMARY_CONTROL_PORT; (void)ATA_SECONDARY_CONTROL_PORT;
     
     memset(drive_info, 0, sizeof(struct DriveInfo));
 
