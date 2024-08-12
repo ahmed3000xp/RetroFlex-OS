@@ -13,6 +13,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+// WARNING: This code could be unfixable here is a counter for you to say how much time wasted on this code
+// Total Centuries wasted = 0 
+// Total Decades wasted = 0
+// Total Years wasted = 0
+// Total Months wasted = 0
+// Total Days wasted = 4
+// Total Hours wasted = 10
+// Total Minutes wasted = 30
+// Total Seconds wasted = 5
+
 #include "ata.h"
 
 // ATA ports and commands for primary controller
@@ -35,7 +45,14 @@ void select_drive(bool is_secondary, bool is_slave) {
 
 void wait_for_ready(bool is_secondary) {
     uint16_t command_port = is_secondary ? ATA_SECONDARY_COMMAND_PORT : ATA_PRIMARY_COMMAND_PORT;
-    while (inb(command_port) & 0x80);
+    while (true) {
+        uint8_t status = inb(command_port);
+        if ((status & 0x80) == 0) break; // Drive not busy
+        if (status & 0x01) {
+            dbg_printf("[%d] Drive error occurred.\n", ticks);
+            return;
+        }
+    }
 }
 
 void identify_drive(struct DriveInfo *drive_info, bool is_slave, bool is_secondary) {
@@ -210,7 +227,7 @@ void write_sector_lba48(uint64_t lba, const void *buffer, uint32_t buffer_size, 
     uint16_t data_port = drive_info->is_secondary ? ATA_SECONDARY_DATA_PORT : ATA_PRIMARY_DATA_PORT;
 
     select_drive(drive_info->is_secondary, drive_info->is_slave);
-
+retursector_numn;
     for (uint32_t i = 0; i < sector_count; i++) {
         outb(command_port + 1, (sector_count >> 8) & 0xFF);
         outb(command_port + 2, sector_count & 0xFF);
@@ -313,7 +330,6 @@ void read_sector_chs(uint16_t cylinder, uint8_t head, uint8_t sector, void *buff
 void write_sector_chs(uint16_t cylinder, uint8_t head, uint8_t sector, const void *buffer, uint32_t buffer_size, struct DriveInfo *drive_info) {
     if (buffer == NULL || buffer_size == 0 || buffer_size % drive_info->sector_size != 0) {
         dbg_printf("[%d] Invalid buffer or buffer size.\n", ticks);
-        return;
     }
 
     uint32_t sector_count = buffer_size / drive_info->sector_size;
