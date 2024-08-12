@@ -13,15 +13,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-// WARNING: This code could be unfixable here is a counter for you to say how much time wasted on this code
+// WARNING: This code might be beyond repair. Here’s a comprehensive waste-time tracker:
 // Total Centuries wasted = 0 
 // Total Decades wasted = 0
 // Total Years wasted = 0
 // Total Months wasted = 0
-// Total Days wasted = 4
-// Total Hours wasted = 10
-// Total Minutes wasted = 30
-// Total Seconds wasted = 5
+// Total Days wasted = 4 (Because sleep is for the weak)
+// Total Hours wasted = 10 (Might be the same as the hours spent wondering why this code even exists)
+// Total Minutes wasted = 30 (Equivalent to 30 minutes of your life you’ll never get back)
+// Total Seconds wasted = 5 (Blink and you missed it, except you didn't)
+// Total Milliseconds wasted = 504 (That's like 1/2 a second, not even close to getting it right)
+// Total Microseconds wasted = 64 (At least it’s not a full second... yet)
+// Total Nanoseconds wasted = 643 (That’s a lot of tiny regrets)
+// Total Picoseconds wasted = 865 (We’re getting into the realm of “why do I even bother”)
+// Total Amount of furries tried to fix this Code = 1 (Yes, even furries give up eventually)
 
 #include "ata.h"
 
