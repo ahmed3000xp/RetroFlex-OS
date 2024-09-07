@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RetroFlex OS</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+        h1, h2, h3 { color: #333; }
+        code { background-color: #f4f4f4; padding: 0.2em; border-radius: 3px; }
+        pre { background-color: #f4f4f4; padding: 1em; border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<h1>RetroFlex OS</h1>
+
+<h2>Overview</h2>
+<p>RetroFlex is a UNIX-like OS compatible with GNU+Linux programs and its own programs.</p>
+
+<h2>Installation Instructions</h2>
+
+<h3>For Windows Users:</h3>
+<p>If you are using Windows, you'll need to install WSL (Windows Subsystem for Linux) and then install a GNU+Linux distribution through the Microsoft Store.</p>
+
+<h3>For Debian/Ubuntu/Ubuntu-based Systems:</h3>
+<pre><code>sudo apt install grub2 qemu-system-x86 nasm gcc make parted dosfstools</code></pre>
+
+<h3>For Fedora Systems:</h3>
+<pre><code>sudo dnf install nasm qemu grub2 virt-manager virt-viewer dnsmasq vde2 bridge-utils nmap-ncat @development-tools bison flex gmp-devel libmpc-devel mpfr-devel texinfo gcc make parted dosfstools</code></pre>
+
+<h3>For Arch/Arch-Based Systems:</h3>
+<pre><code>sudo pacman -Syy nasm grub virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat base-devel bison flex gmp libmpc mpfr texinfo gcc make qemu-full parted dosfstools</code></pre>
+
+<h2>Compiling and Running RetroFlex OS</h2>
+<p>After installation, compile and run RetroFlex OS by executing:</p>
+<pre><code>make all</code></pre>
+
+<h2>Troubleshooting Permissions Issue</h2>
+<p>If you encounter a permissions error during ISO creation, such as:</p>
+<pre><code>rm: remove write-protected regular file '../disk.img'?
+...
+qemu-system: Could not open '../disk.img': Permission denied</code></pre>
+<p>Try running the script with elevated privileges using <code>sudo</code>:</p>
+<pre><code>sudo make all</code></pre>
+
+<h3>Running on x86 Hardware</h3>
+<p>If you have an x86-based Computer, you can run the OS on the CPU itself by running:</p>
+<pre><code>make qemu_native</code></pre>
+
+<h2>Fun Facts</h2>
+<ul>
+    <li><strong>Did you know?</strong> RetroFlex OS was created by a furry who is also an Arch user. He claims his choice of operating systems is as eclectic as his sense of humor!</li>
+    <li><strong>Quirky Code:</strong> The developer once tried to program RetroFlex OS while juggling flaming torches. Spoiler: It didn't end well, but the OS survived!</li>
+    <li><strong>Unlikely Inspiration:</strong> The idea for RetroFlex OS came during a late-night snack attack when the developer mistook a pizza box for a new motherboard. Pizza might not be the best hardware, but it sure inspired some great software!</li>
+    <li><strong>Arch Enthusiasm:</strong> It’s rumored that the developer’s love for Arch GNU+Linux is so strong that they even use Arch stickers to decorate their workspace. Rumor also has it that the stickers are more organized than their code!</li>
+    <li><strong>Furry Fact:</strong> The developer claims that RetroFlex OS runs smoother when you pet your favorite plushie while compiling. It's unproven, but it might just be the secret to compiling success!</li>
+</ul>
+
+<h2>License</h2>
+<p>This project is licensed under the GPL-3.0 license.</p>
+
+<h2>Contact</h2>
+<p>For support or questions, please contact me at <a href="mailto:ahmed.gamer.osama@gmail.com">ahmed.gamer.osama@gmail.com</a>.</p>
+
+</body>
+</html>
+
