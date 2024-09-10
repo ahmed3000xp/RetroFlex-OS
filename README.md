@@ -67,4 +67,4 @@ This project is licensed under the GPL-3.0 license.
 
 #### Contact
 
-For support or questions, please contact me at ahmed.gamer.osama@gmail.com.
+For support or questions, please contact me at ahmed.gamer.stupid@proton.me.
