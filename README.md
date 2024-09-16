@@ -61,6 +61,10 @@ make qemu_native
 
 - **Furry Fact:** The developer claims that RetroFlex OS runs smoother when you pet your favorite plushie while compiling. It's unproven, but it might just be the secret to compiling success!
 
+- **Global Touch:** The mastermind behind RetroFlex OS is an Arab blending Egyptian flair with Saudi spice. And yes, their Muslim heritage might mean more prayers—specifically, when pressing Enter after typing `make all` in the terminal. It’s rumored that when they pray for a smooth compile, it actually works. Just don’t ask how many times they’ve had to pray!
+
+- **How Many Times you did this** I think you cringed 1 to 2 times, when I said that I'm a furry and an Arch User. I think you LOLed (Laughed Out Loud) a lot from What I said!
+
 #### License
 
 This project is licensed under the GNU GPL-3.0 license.
