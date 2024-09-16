@@ -57,13 +57,13 @@ make qemu_native
 
 - **Unlikely Inspiration:** The idea for RetroFlex OS came during a late-night snack attack when the developer mistook a pizza box for a new motherboard. Pizza might not be the best hardware, but it sure inspired some great software!
 
-- **Arch Enthusiasm:** It’s rumored that the developer’s love for Arch GNU+Linux is so strong that they even use Arch stickers to decorate their workspace. Rumor also has it that the stickers are more organized than their code!
+- **Arch Enthusiasm:** It’s rumored that the developer’s love for Arch GNU+Linux is so strong that he even uses Arch stickers to decorate his workspace. Rumor also has it that the stickers are more organized than his code!
 
 - **Furry Fact:** The developer claims that RetroFlex OS runs smoother when you pet your favorite plushie while compiling. It's unproven, but it might just be the secret to compiling success!
 
-- **Global Touch:** The mastermind behind RetroFlex OS is an Arab blending Egyptian flair with Saudi spice. And yes, their Muslim heritage might mean more prayers—specifically, when pressing Enter after typing `make all` in the terminal. It’s rumored that when they pray for a smooth compile, it actually works. Just don’t ask how many times they’ve had to pray!
+- **Global Touch:** The mastermind behind RetroFlex OS is an Arab blending Egyptian flair with Saudi spice. And yes, his Muslim heritage might mean more prayers—specifically, when pressing Enter after typing `make all` in the terminal. It’s rumored that when he prays for a smooth compile, it actually works. Just don’t ask him how many times he’s had to pray!
 
-- **How Many Times you did this** I think you cringed 1 to 2 times, when I said that I'm a furry and an Arch User. I think you LOLed (Laughed Out Loud) a lot from What I said!
+- **How Many Times you did this:** I think you cringed 1 to 2 times when I said that I'm a furry and an Arch User. I think you LOLed (Laughed Out Loud) a lot from what I said!
 
 #### License
 
