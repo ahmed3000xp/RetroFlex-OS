@@ -68,3 +68,7 @@ This project is licensed under the GNU GPL-3.0 license.
 #### Contact
 
 For support or questions, please contact me at ahmed.gamer.stupid@proton.me.
+
+##### Note
+
+The kernel of RetroFlex-OS is being rewritten, because of issues in the code, being unstable, the code being so messy, etc.
