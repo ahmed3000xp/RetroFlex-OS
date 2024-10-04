@@ -1,7 +1,10 @@
 # RetroFlex OS Project
 
+## Welcome
+Welcome to nostalgia meeting chaos and my stupidity
+
 ## Overview
-RetroFlex is a UNIX-like OS compatible with GNU+Linux programs and its own programs.
+RetroFlex-OS is a UNIX-like OS compatible with GNU+Linux programs and its own programs.
 
 ## Installation Instructions
 
